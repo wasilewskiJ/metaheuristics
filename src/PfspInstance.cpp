@@ -50,12 +50,3 @@ void PfspInstance::load_from_file(const std::string &filename) {
 #endif
   }
 }
-
-int main() {
-  try {
-    PfspInstance instance("0.fsp");
-  } catch (const std::exception &e) {
-    return 1;
-  }
-  return 0;
-}
