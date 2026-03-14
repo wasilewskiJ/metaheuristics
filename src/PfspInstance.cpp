@@ -1,6 +1,8 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <random>
+#include <algorithm>
 #include <string>
 
 #include "PfspInstance.hpp"
@@ -50,3 +52,28 @@ void PfspInstance::load_from_file(const std::string &filename) {
 #endif
   }
 }
+
+int PfspInstance::calculate_total_time(const std::vector<int> &job_sequence) const {
+  std::vector<int> machine_completion_times(num_machines, 0);
+  for (int job : job_sequence) {
+    for (int m = 0; m < num_machines; m++) {
+      int processing_time = processing_times[m][job];
+      machine_completion_times[m] += processing_time;
+    }
+  }
+  return *machine_completion_times.end();
+}
+
+Solution PfspInstance::randomAlg() const {
+  std::vector<int> job_sequence(num_jobs);
+
+  for (int i = 0; i < num_jobs; ++i) {
+    job_sequence[i] = i;
+  }
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::shuffle(job_sequence.begin(), job_sequence.end(), gen);
+  int total_time = calculate_total_time(job_sequence);
+  return Solution(total_time, job_sequence);
+};
