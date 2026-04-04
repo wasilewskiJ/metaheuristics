@@ -39,11 +39,10 @@ public:
   int seed;
   int up_bound;
   int low_bound;
-  std::vector<std::vector<int>>
-      processing_times; // processing_times[machine][job]
+  std::vector<std::vector<int>> processing_times; // processing_times[machine][job]
 
   PfspInstance(const std::string &filename);
-  // randomAlgorithm returns a random solution for the problem instance
+  // randomAlg returns a random solution for the problem instance
   Solution randomAlg() const;
   // runRandomAlg runs randomAlg() `iterations` times and returns aggregate
   // stats
