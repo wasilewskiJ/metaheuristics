@@ -8,6 +8,7 @@
 #include <string>
 
 #include "PfspInstance.hpp"
+#include "debug.hpp"
 
 #define TEST_CASES_DIR "../test_cases/"
 constexpr auto max_size = std::numeric_limits<std::streamsize>::max();
