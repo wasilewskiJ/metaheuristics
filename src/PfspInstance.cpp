@@ -25,8 +25,7 @@ void PfspInstance::load_from_file(const std::string &filename) {
 
   std::ifstream infile(path);
   if (!infile) {
-    std::cerr << "ERROR: Could not open file: " << path << std::endl;
-    throw std::runtime_error("File open failed");
+    throw std::runtime_error("File open failed: " + path);
   }
   infile.ignore(max_size, '\n'); // Skip the first line
   infile >> num_jobs >> num_machines >> seed >> up_bound >> low_bound;

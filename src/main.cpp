@@ -9,7 +9,9 @@ int main() {
     logger.dumpToFile();
     logger.printBestTime();
   } catch (const std::exception &e) {
-    return 1;
+      std::cerr << "ERROR: " << e.what() << '\n';
+      std::cerr << "Program exits.";
+      return 1;
   }
   return 0;
 }
