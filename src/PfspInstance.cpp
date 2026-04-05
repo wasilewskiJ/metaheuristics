@@ -94,14 +94,14 @@ for 1..m:
 
 
 int PfspInstance::calculate_total_time(const std::vector<int> &job_sequence) const {
-  int job_time_finish_on_machine[num_machines][num_jobs];
+  std::vector<std::vector<int>> job_time_finish_on_machine(num_machines, std::vector<int>(num_jobs));
   job_time_finish_on_machine[0][job_sequence[0]] = processing_times[0][job_sequence[0]];
   for (auto it = (job_sequence.begin() + 1); it != job_sequence.end(); ++it) {
     job_time_finish_on_machine[0][*it] = processing_times[0][*it];
     job_time_finish_on_machine[0][*it] += job_time_finish_on_machine[0][*(it-1)];
-  }  
-  
-  int time_spent_on_machine[num_machines];
+  }
+
+  std::vector<int> time_spent_on_machine(num_machines);
   for (int m = 1; m < num_machines; m++) {
     int time = 0;
     for (auto it = job_sequence.begin(); it != job_sequence.end(); ++it) {
