@@ -15,14 +15,13 @@ struct LoggerResult {
 
   void print() const {
     std::cout << "Best Time: " << *best_times.end()
-              << "\nWorst Time: " << *worst_times.end() << "\nBest Job Sequence: ";
-    for (int job : best_job_sequence) {
-      std::cout << job << " ";
+              << "\nWorst Time: " << *worst_times.end() << "\nBest Job Sequence:
+"; for (int job : best_job_sequence) { std::cout << job << " ";
     }
     std::cout << std::endl;
   }
 };
-*/ 
+*/
 
 struct Solution {
   int total_time;
@@ -39,14 +38,17 @@ public:
   int seed;
   int up_bound;
   int low_bound;
-  std::vector<std::vector<int>> processing_times; // processing_times[machine][job]
+  std::vector<std::vector<int>>
+      processing_times; // processing_times[machine][job]
 
   PfspInstance(const std::string &filename);
   // randomAlg returns a random solution for the problem instance
   Solution randomAlg() const;
+  Solution greedyAlg(int starting_job) const;
   // runRandomAlg runs randomAlg() `iterations` times and returns aggregate
   // stats
   std::vector<Solution> runRandomAlg(int iterations = 1000) const;
+  std::vector<Solution> runGreedyAlg(int starting_job = -1) const;
 
 private:
   void load_from_file(const std::string &filename);

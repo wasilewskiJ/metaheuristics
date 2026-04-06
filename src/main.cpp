@@ -18,15 +18,20 @@ int main() {
     try {
       std::cout << "=== " << path << " ===\n";
       PfspInstance instance(path);
-      std::vector<Solution> result = instance.runRandomAlg(1000);
+      std::vector<Solution> randomResult = instance.runRandomAlg(1000);
+      std::string base = path.substr(path.rfind('/') + 1);
+      base = base.substr(0, base.rfind('.'));
 
-      // derive output filename from instance name, e.g. "tai20_5_0.csv"
-      std::string name = path.substr(path.rfind('/') + 1);
-      name = name.substr(0, name.rfind('.')) + "_randomAlg.csv";
+      Logger randomLogger(randomResult, base + "_randomAlg.csv");
+      randomLogger.dumpToFile();
+      std::cout << "[RANDOM] ";
+      randomLogger.printBestTime();
 
-      Logger logger(result, name);
-      logger.dumpToFile();
-      logger.printBestTime();
+      std::vector<Solution> greedyResult = instance.runGreedyAlg();
+      Logger greedyLogger(greedyResult, base + "_greedyAlg.csv");
+      greedyLogger.dumpToFile();
+      std::cout << "[GREEDY] ";
+      greedyLogger.printBestTime();
     } catch (const std::exception &e) {
       std::cerr << "ERROR: " << e.what() << '\n';
     }

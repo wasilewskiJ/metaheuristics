@@ -119,3 +119,44 @@ Solution PfspInstance::randomAlg() const {
   int total_time = calculate_total_time(job_sequence);
   return Solution(total_time, job_sequence);
 };
+
+Solution PfspInstance::greedyAlg(int starting_job) const {
+  std::vector<int> job_sequence;
+  job_sequence.reserve(num_jobs);
+  job_sequence.push_back(starting_job);
+
+  for (int i = 0; i < num_jobs - 1; i++) {
+    int best_job = -1, best_time = std::numeric_limits<int>::max();
+    for (int j = 0; j < num_jobs; j++) {
+      if (count(job_sequence.begin(), job_sequence.end(), j))
+        continue;
+      std::vector<int> candidate(job_sequence);
+      candidate.push_back(j);
+      int t = calculate_total_time(candidate);
+      if (t < best_time) {
+        best_time = t;
+        best_job = j;
+      }
+    }
+    job_sequence.push_back(best_job);
+  }
+
+  int total_time = calculate_total_time(job_sequence);
+  return Solution(total_time, job_sequence);
+};
+
+std::vector<Solution> PfspInstance::runGreedyAlg(int starting_job) const {
+  std::vector<Solution> results;
+  if (starting_job == -1) {
+    for (int i = 0; i < num_jobs; ++i) {
+      results.push_back(greedyAlg(i));
+    }
+  } else {
+    if (starting_job < 0 || starting_job >= num_jobs) {
+      throw std::invalid_argument("invalid starting job number for greedyAlg "
+                                  "(must be in [0, num_jobs))");
+    }
+    results.push_back(greedyAlg(starting_job));
+  }
+  return results;
+}
