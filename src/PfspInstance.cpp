@@ -55,80 +55,35 @@ void PfspInstance::load_from_file(const std::string &filename) {
   }
 }
 
-/*
-int PfspInstance::calculate_total_time(
-    const std::vector<int> &job_sequence) const {
-  std::vector<int> job_times_on_last_machine(num_jobs, 0);
-  for (auto it = job_sequence.begin(); it != job_sequence.end(); ++it) {
-    int time_on_last_machine = 0;
-    for (int m = 0; m < num_machines; m++) {
-      time_on_last_machine += processing_times[m][*it];
-      if (it != job_sequence.begin())
-        time_on_last_machine += processing_times[m][*(it - 1)];
-    }
-    job_times_on_last_machine[*it] = time_on_last_machine;
-    std::cout << "JOB: " << *it + 1
-              << " Time on last machine: " << time_on_last_machine << std::endl;
-  }
-  int sum = 0;
-  for(int time : job_times_on_last_machine) {
-    sum += time;
-  }
-  return sum;
-}
-*/ 
-/*
-job_time_finish_on_machine[m][j];
-job_time_finish_on_machine[0][jobs_sequence[0]] = processing_times[0][jobs_seq[0]];
-for 1..j:
-  job_time_finish_on_machine[0][j] += processing_times[0][j] + job_time_finish[0][j-1];
-
-
-for 1..m:
-  time = 0
-  for 0..j:
-    if (time < job_time_finish_on_machine[m-1][j])
-      time += (uint)(processing_times[m-1][j] - time)
-      job_time_finish_on_machine[m][j] = time + processing_time[m][j];
- */     
-
-
 int PfspInstance::calculate_total_time(const std::vector<int> &job_sequence) const {
-  std::vector<std::vector<int>> job_time_finish_on_machine(num_machines, std::vector<int>(num_jobs));
-  job_time_finish_on_machine[0][job_sequence[0]] = processing_times[0][job_sequence[0]];
+  std::vector<std::vector<int>> job_time_finish_on_machine(
+      num_machines, std::vector<int>(num_jobs));
+  job_time_finish_on_machine[0][job_sequence[0]] =
+      processing_times[0][job_sequence[0]];
+  // liczymy czas spędzony na maszynie pierwszej
   for (auto it = (job_sequence.begin() + 1); it != job_sequence.end(); ++it) {
     job_time_finish_on_machine[0][*it] = processing_times[0][*it];
-    job_time_finish_on_machine[0][*it] += job_time_finish_on_machine[0][*(it-1)];
+    job_time_finish_on_machine[0][*it] +=
+        job_time_finish_on_machine[0][*(it - 1)];
   }
 
-  std::vector<int> time_spent_on_machine(num_machines);
+  // liczymy czas spędzony na pozostałych maszynach
   for (int m = 1; m < num_machines; m++) {
     int time = 0;
     for (auto it = job_sequence.begin(); it != job_sequence.end(); ++it) {
-      if(time < job_time_finish_on_machine[m-1][*it]) {
-        time = job_time_finish_on_machine[m-1][*it];
-      } 
-        time += processing_times[m][*it];
-        job_time_finish_on_machine[m][*it] = time;
+      if (time < job_time_finish_on_machine[m - 1][*it]) {
+        time = job_time_finish_on_machine[m - 1][*it];
+      }
+      time += processing_times[m][*it];
+      job_time_finish_on_machine[m][*it] = time;
     }
-    time_spent_on_machine[m] = time;
   }
   int sum = 0;
   for (int i = 0; i < num_jobs; i++) {
-    sum += job_time_finish_on_machine[num_machines-1][i];
+    sum += job_time_finish_on_machine[num_machines - 1][i];
   }
   return sum;
 }
-
-/*
-int PfspInstance::calculate_total_time(const std::vector<int> &job_sequence)
-const { std::vector<int> machine_times(num_machines, 0); for (int job :
-job_sequence) { for (int m = 0; m < num_machines; m++) { machine_times[m] +=
-processing_times[m][job];
-    }
-  }
-  return *std::max_element(machine_times.begin(), machine_times.end());
-*/
 
 std::vector<Solution> PfspInstance::runRandomAlg(int iterations) const {
   if (iterations <= 0) {
