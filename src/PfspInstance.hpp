@@ -50,7 +50,8 @@ public:
   std::vector<Solution> runRandomAlg(int iterations = 1000) const;
   std::vector<Solution> runGreedyAlg(int starting_job = -1) const;
 
+  int calculate_total_time(const std::vector<int> &job_sequence) const;
+
 private:
   void load_from_file(const std::string &filename);
-  int calculate_total_time(const std::vector<int> &job_sequence) const;
 };

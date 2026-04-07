@@ -16,6 +16,12 @@ public:
     calculateTimes();
   };
 
+  // EA constructor: computes best/avg/worst per generation
+  Logger(std::vector<std::vector<Solution>> generations, std::string output_filename)
+      : output_filename(output_filename) {
+    calculateTimesPerGeneration(generations);
+  };
+
 private:
   std::vector<int> best_times;
   std::vector<int> avg_course;
@@ -23,4 +29,5 @@ private:
   std::vector<int> best_job_sequence;
   std::vector<int> worst_job_sequence;
   void calculateTimes();
+  void calculateTimesPerGeneration(const std::vector<std::vector<Solution>>& generations);
 };
