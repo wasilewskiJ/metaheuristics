@@ -3,6 +3,7 @@
 #include <random>
 #include <algorithm>
 #include <unordered_set>
+#include <unordered_map>
 
 std::vector<int> mutate_swap(std::vector<int> job_sequence) {
   std::random_device rd;
@@ -59,6 +60,63 @@ std::vector<int> crossover_ox(const std::vector<int>& p1, const std::vector<int>
       in_child.insert(p2[i]);
     }
   }
+
+  return child;
+}
+
+std::vector<int> crossover_pmx(const std::vector<int>& p1, const std::vector<int>& p2) {
+  int n = p1.size();
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(0, n - 1);
+
+  int a = dist(gen);
+  int b;
+  do { b = dist(gen); } while (b == a);
+  if (a > b) std::swap(a, b);
+
+  // Step 1: copy segment [a,b] from p1, build mapping p1[i] -> p2[i]
+  std::vector<int> child(n, -1);
+  std::unordered_set<int> in_segment;
+  std::unordered_map<int,int> p1_to_p2;
+  for (int i = a; i <= b; i++) {
+    child[i] = p1[i];
+    in_segment.insert(p1[i]);
+    p1_to_p2[p1[i]] = p2[i];
+  }
+
+  // Step 2: fill remaining positions from p2, following mapping chain if needed
+  for (int i = 0; i < n; i++) {
+    if (i >= a && i <= b) continue;
+    int val = p2[i];
+    while (in_segment.count(val))
+      val = p1_to_p2[val];
+    child[i] = val;
+  }
+
+  return child;
+}
+
+std::vector<int> crossover_cx(const std::vector<int>& p1, const std::vector<int>& p2) {
+  int n = p1.size();
+
+  // Build position map for p2: value -> index
+  std::unordered_map<int,int> p2_pos;
+  for (int i = 0; i < n; i++)
+    p2_pos[p2[i]] = i;
+
+  // Find cycle starting at position 0
+  std::vector<bool> in_cycle(n, false);
+  int pos = 0;
+  do {
+    in_cycle[pos] = true;
+    pos = p2_pos[p1[pos]]; // follow: take p1 value, find its position in p2
+  } while (pos != 0);
+
+  // Cycle positions from p1, rest from p2
+  std::vector<int> child(n);
+  for (int i = 0; i < n; i++)
+    child[i] = in_cycle[i] ? p1[i] : p2[i];
 
   return child;
 }
