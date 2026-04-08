@@ -27,9 +27,11 @@ Solution selection_tournament(const std::vector<Solution>& population, int tour_
 // --- EA ---
 
 EA::EA(const PfspInstance& instance, int pop_size, int generations,
-       float Px, float Pm, int tour_size)
+       float Px, float Pm, int tour_size,
+       CrossoverType crossover, MutationType mutation)
     : instance(instance), pop_size(pop_size), generations(generations),
-      Px(Px), Pm(Pm), tour_size(tour_size) {}
+      Px(Px), Pm(Pm), tour_size(tour_size),
+      crossover(crossover), mutation(mutation) {}
 
 void EA::initialize_population() {
   population.clear();
@@ -55,13 +57,22 @@ Solution EA::run() {
       Solution p2 = selection_tournament(population, tour_size);
 
       std::vector<int> child_seq;
-      if (prob(gen) < Px)
-        child_seq = crossover_ox(p1.job_sequence, p2.job_sequence);
-      else
+      if (prob(gen) < Px) {
+        switch (crossover) {
+          case CrossoverType::OX:  child_seq = crossover_ox(p1.job_sequence, p2.job_sequence);  break;
+          case CrossoverType::PMX: child_seq = crossover_pmx(p1.job_sequence, p2.job_sequence); break;
+          case CrossoverType::CX:  child_seq = crossover_cx(p1.job_sequence, p2.job_sequence);  break;
+        }
+      } else {
         child_seq = p1.job_sequence;
+      }
 
-      if (prob(gen) < Pm)
-        child_seq = mutate_swap(child_seq);
+      if (prob(gen) < Pm) {
+        switch (mutation) {
+          case MutationType::SWAP:      child_seq = mutate_swap(child_seq);      break;
+          case MutationType::INVERSION: child_seq = mutate_inversion(child_seq); break;
+        }
+      }
 
       int child_time = instance.calculate_total_time(child_seq);
       new_population.push_back(Solution(child_time, child_seq));
