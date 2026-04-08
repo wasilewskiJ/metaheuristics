@@ -52,6 +52,10 @@ public:
 
   int calculate_total_time(const std::vector<int> &job_sequence) const;
 
+  void reset_eval_counter() { eval_counter = 0; }
+  int get_eval_counter() const { return eval_counter; }
+
 private:
+  mutable int eval_counter = 0;
   void load_from_file(const std::string &filename);
 };

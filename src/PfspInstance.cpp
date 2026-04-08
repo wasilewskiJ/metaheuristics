@@ -56,6 +56,7 @@ void PfspInstance::load_from_file(const std::string &filename) {
 }
 
 int PfspInstance::calculate_total_time(const std::vector<int> &job_sequence) const {
+  eval_counter++;
   std::vector<std::vector<int>> job_time_finish_on_machine(
       num_machines, std::vector<int>(num_jobs));
   job_time_finish_on_machine[0][job_sequence[0]] =
