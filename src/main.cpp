@@ -1,3 +1,5 @@
+#include "EA.hpp"
+#include "SA.hpp"
 #include "PfspInstance.hpp"
 #include "logger.hpp"
 
@@ -32,6 +34,20 @@ int main() {
       greedyLogger.dumpToFile();
       std::cout << "[GREEDY] ";
       greedyLogger.printBestTime();
+
+      EA ea(instance);
+      ea.run();
+      Logger eaLogger(ea.getGenerationHistory(), base + "_EA.csv");
+      eaLogger.dumpToFile();
+      std::cout << "[EA] ";
+      eaLogger.printBestTime();
+
+      SA sa(instance);
+      sa.run();
+      Logger saLogger(sa.getGenerationHistory(), base + "_SA.csv");
+      saLogger.dumpToFile();
+      std::cout << "[SA] ";
+      saLogger.printBestTime();
     } catch (const std::exception &e) {
       std::cerr << "ERROR: " << e.what() << '\n';
     }
