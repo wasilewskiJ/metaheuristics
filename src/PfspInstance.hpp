@@ -48,7 +48,7 @@ public:
   // runRandomAlg runs randomAlg() `iterations` times and returns aggregate
   // stats
   std::vector<Solution> runRandomAlg(int iterations = 1000) const;
-  std::vector<Solution> runGreedyAlg(int starting_job = -1) const;
+  std::vector<Solution> runGreedyAlg(int starting_job = -1, int max_starts = 100) const;
 
   int calculate_total_time(const std::vector<int> &job_sequence) const;
 

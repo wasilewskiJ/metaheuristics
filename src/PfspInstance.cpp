@@ -145,10 +145,11 @@ Solution PfspInstance::greedyAlg(int starting_job) const {
   return Solution(total_time, job_sequence);
 };
 
-std::vector<Solution> PfspInstance::runGreedyAlg(int starting_job) const {
+std::vector<Solution> PfspInstance::runGreedyAlg(int starting_job, int max_starts) const {
   std::vector<Solution> results;
   if (starting_job == -1) {
-    for (int i = 0; i < num_jobs; ++i) {
+    int limit = std::min(num_jobs, max_starts);
+    for (int i = 0; i < limit; ++i) {
       results.push_back(greedyAlg(i));
     }
   } else {
