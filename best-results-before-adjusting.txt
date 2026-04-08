@@ -1,0 +1,35 @@
+=== ../test_cases/0.fsp ===
+[RANDOM] Best Time: 1170
+[GREEDY] Best Time: 1170
+[EA] Best Time: 1170
+[SA] Best Time: 1170
+=== ../test_cases/tai20_5_0.fsp ===
+[RANDOM] Best Time: 15972
+[GREEDY] Best Time: 15403
+[EA] Best Time: 14399
+[SA] Best Time: 14150
+=== ../test_cases/tai20_10_0.fsp ===
+[RANDOM] Best Time: 23517
+[GREEDY] Best Time: 24611
+[EA] Best Time: 21330
+[SA] Best Time: 22080
+=== ../test_cases/tai20_20_0.fsp ===
+[RANDOM] Best Time: 36858
+[GREEDY] Best Time: 35103
+[EA] Best Time: 34185
+[SA] Best Time: 34518
+=== ../test_cases/tai100_10_0.fsp ===
+[RANDOM] Best Time: 364713
+[GREEDY] Best Time: 373462
+[EA] Best Time: 324572
+[SA] Best Time: 315785
+=== ../test_cases/tai100_20_0.fsp ===
+[RANDOM] Best Time: 446341
+[GREEDY] Best Time: 440486
+[EA] Best Time: 402883
+[SA] Best Time: 391245
+=== ../test_cases/tai500_20_0.fsp ===
+[RANDOM] Best Time: 7975481
+[GREEDY] Best Time: 8407645
+[EA] Best Time: 7551498
+[SA] Best Time: 7186335
