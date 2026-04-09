@@ -3,26 +3,6 @@
 #include <string>
 #include <vector>
 
-/*
-struct LoggerResult {
-  int num_iterations;
-  std::vector<int> best_times;
-  std::vector<int> avg_course;
-  std::vector<int> worst_times;
-
-  std::vector<int> best_job_sequence;
-  std::vector<int> worst_job_sequence;
-
-  void print() const {
-    std::cout << "Best Time: " << *best_times.end()
-              << "\nWorst Time: " << *worst_times.end() << "\nBest Job Sequence:
-"; for (int job : best_job_sequence) { std::cout << job << " ";
-    }
-    std::cout << std::endl;
-  }
-};
-*/
-
 struct Solution {
   int total_time;
   std::vector<int> job_sequence;
