@@ -13,7 +13,7 @@ static const int N_RUNS_FINAL     = 10;
 
 // Best config (set after tuning)
 static const int    EA_POP  = 100;
-static const int    EA_GEN  = 1000;  // EA_POP * EA_GEN == BUDGET
+static const int    EA_GEN  = 100;  // EA_POP * EA_GEN == BUDGET
 static const float  EA_PX   = 0.7;
 static const float  EA_PM   = 0.1;
 static const int    EA_TOUR = 5;
