@@ -2,10 +2,22 @@
 #include <cmath>
 #include <random>
 
-double SA::estimate_initial_temp(const PfspInstance& instance) {
-  auto samples = instance.runRandomAlg(50);
-  double avg = compute_stats(samples).avg;
-  return avg * 0.1;
+double SA::estimate_initial_temp(const PfspInstance& instance, double p0, int n_samples) {
+  double sum_positive_delta = 0;
+  int count = 0;
+
+  for (int i = 0; i < n_samples; i++) {
+    Solution current = instance.randomAlg();
+    std::vector<int> neighbour_seq = mutate_swap(current.job_sequence);
+    int delta = instance.calculate_total_time(neighbour_seq) - current.total_time;
+    if (delta > 0) {
+      sum_positive_delta += delta;
+      ++count;
+    }
+  }
+
+  double avg_positive_delta = sum_positive_delta / count;
+  return -avg_positive_delta / std::log(p0);
 }
 
 SA::SA(const PfspInstance& instance, double initial_temp, double cooling_rate, int iterations, int log_interval)
