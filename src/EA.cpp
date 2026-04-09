@@ -39,6 +39,15 @@ void EA::initialize_population() {
     population.push_back(instance.randomAlg());
 }
 
+SummaryStats EA::runMultiple(int n_runs) {
+  std::vector<int> best_per_run;
+  for (int i = 0; i < n_runs; i++) {
+    Solution best = run();
+    best_per_run.push_back(best.total_time);
+  }
+  return compute_multirun_stats(best_per_run);
+}
+
 Solution EA::run() {
   std::mt19937 gen(std::random_device{}());
   std::uniform_real_distribution<float> prob(0.0f, 1.0f);

@@ -1,6 +1,7 @@
 #pragma once
 #include "operators.hpp"
 #include "PfspInstance.hpp"
+#include "stats.hpp"
 #include <vector>
 
 class SA {
@@ -9,6 +10,7 @@ public:
      double cooling_rate = 0.995, int iterations = 10000);
 
   Solution run();
+  SummaryStats runMultiple(int n_runs = 10);
   const std::vector<std::vector<Solution>>& getGenerationHistory() const { return history; }
 
 private:

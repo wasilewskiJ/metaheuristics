@@ -6,6 +6,15 @@ SA::SA(const PfspInstance& instance, double initial_temp, double cooling_rate, i
     : instance(instance), initial_temp(initial_temp),
       cooling_rate(cooling_rate), iterations(iterations) {}
 
+SummaryStats SA::runMultiple(int n_runs) {
+  std::vector<int> best_per_run;
+  for (int i = 0; i < n_runs; i++) {
+    Solution best = run();
+    best_per_run.push_back(best.total_time);
+  }
+  return compute_multirun_stats(best_per_run);
+}
+
 Solution SA::run() {
   std::mt19937 gen(std::random_device{}());
   std::uniform_real_distribution<double> prob(0.0, 1.0);

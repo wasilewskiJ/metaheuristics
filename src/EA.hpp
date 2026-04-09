@@ -1,6 +1,7 @@
 #pragma once
 #include "operators.hpp"
 #include "PfspInstance.hpp"
+#include "stats.hpp"
 #include <vector>
 
 Solution selection_tournament(const std::vector<Solution>& population, int tour_size);
@@ -20,6 +21,7 @@ public:
      MutationType  mutation  = MutationType::SWAP);
 
   Solution run();
+  SummaryStats runMultiple(int n_runs = 10);
   const std::vector<std::vector<Solution>>& getGenerationHistory() const { return generation_history; }
 
 private:
