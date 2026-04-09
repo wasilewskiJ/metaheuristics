@@ -2,8 +2,15 @@
 #include <cmath>
 #include <random>
 
+double SA::estimate_initial_temp(const PfspInstance& instance) {
+  auto samples = instance.runRandomAlg(50);
+  double avg = compute_stats(samples).avg;
+  return avg * 0.1;
+}
+
 SA::SA(const PfspInstance& instance, double initial_temp, double cooling_rate, int iterations)
-    : instance(instance), initial_temp(initial_temp),
+    : instance(instance),
+      initial_temp(initial_temp < 0 ? estimate_initial_temp(instance) : initial_temp),
       cooling_rate(cooling_rate), iterations(iterations) {}
 
 SummaryStats SA::runMultiple(int n_runs) {

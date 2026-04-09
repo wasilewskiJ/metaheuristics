@@ -21,7 +21,7 @@ static const int    EA_TOUR = 5;
 static const CrossoverType EA_CROSS = CrossoverType::OX;
 static const MutationType  EA_MUT   = MutationType::SWAP;
 
-static const double SA_TEMP    = 1000.0;
+static const double SA_TEMP    = -1.0;   // -1 = auto-estimate from instance
 static const double SA_COOLING = 0.995;
 
 static const std::vector<std::string> TUNING_EASY   = { "../test_cases/tai20_5_0.fsp" };
@@ -89,9 +89,11 @@ void run_tuning(const std::string& path) {
     print_stats("mutation=" + label, ea.runMultiple(N_RUNS_TUNING));
   }
 
-  // --- SA: varying initial_temp ---
+  // --- SA: varying initial_temp (scaled to instance) ---
   std::cout << "\n-- SA initial_temp --\n";
-  for (double temp : {100.0, 1000.0, 5000.0}) {
+  double base_temp = SA::estimate_initial_temp(instance);
+  for (double factor : {0.1, 1.0, 10.0}) {
+    double temp = base_temp * factor;
     SA sa(instance, temp, SA_COOLING, BUDGET);
     print_stats("temp=" + std::to_string(temp), sa.runMultiple(N_RUNS_TUNING));
   }

@@ -6,8 +6,11 @@
 
 class SA {
 public:
-  SA(const PfspInstance& instance, double initial_temp = 1000.0,
+  SA(const PfspInstance& instance, double initial_temp = -1.0,
      double cooling_rate = 0.995, int iterations = 10000);
+
+  // Estimates a good initial temperature from 50 random solutions (10% of avg)
+  static double estimate_initial_temp(const PfspInstance& instance);
 
   Solution run();
   SummaryStats runMultiple(int n_runs = 10);
