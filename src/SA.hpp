@@ -1,7 +1,7 @@
 #pragma once
 #include "operators.hpp"
 #include "PfspInstance.hpp"
-#include "stats.hpp"
+#include "logger.hpp"
 #include <vector>
 
 class SA {

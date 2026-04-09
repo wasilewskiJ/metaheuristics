@@ -2,7 +2,6 @@
 #include "SA.hpp"
 #include "PfspInstance.hpp"
 #include "logger.hpp"
-#include "stats.hpp"
 
 #include <cassert>
 #include <iomanip>
