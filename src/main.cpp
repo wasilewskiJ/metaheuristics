@@ -142,7 +142,7 @@ void run_comparison(const std::string& path) {
   Logger(ea.getGenerationHistory(), base + "_EA.csv").dumpToFile();
 
   // SA - 10 runs + single run for chart
-  SA sa(instance, SA_TEMP, SA_COOLING, BUDGET);
+  SA sa(instance, SA_TEMP, SA_COOLING, BUDGET, EA_POP);
   print_stats("SA", sa.runMultiple(N_RUNS_FINAL));
   sa.run();
   Logger(sa.getGenerationHistory(), base + "_SA.csv").dumpToFile();

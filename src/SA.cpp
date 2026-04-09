@@ -8,10 +8,10 @@ double SA::estimate_initial_temp(const PfspInstance& instance) {
   return avg * 0.1;
 }
 
-SA::SA(const PfspInstance& instance, double initial_temp, double cooling_rate, int iterations)
+SA::SA(const PfspInstance& instance, double initial_temp, double cooling_rate, int iterations, int log_interval)
     : instance(instance),
       initial_temp(initial_temp < 0 ? estimate_initial_temp(instance) : initial_temp),
-      cooling_rate(cooling_rate), iterations(iterations) {}
+      cooling_rate(cooling_rate), iterations(iterations), log_interval(log_interval) {}
 
 SummaryStats SA::runMultiple(int n_runs) {
   std::vector<int> best_per_run;
@@ -47,8 +47,7 @@ Solution SA::run() {
     // Cool down
     temp *= cooling_rate;
 
-    // Log every 100 iterations
-    if (i % 100 == 0)
+    if (i % log_interval == 0)
       history.push_back({current});
   }
 
