@@ -1,0 +1,35 @@
+
+❯ ./metaheuristics
+=== ../test_cases/0.fsp ===
+[RANDOM] Best Time: 1170
+[GREEDY] Best Time: 1170
+[EA] Best Time: 1170
+[SA] Best Time: 1170
+=== ../test_cases/tai20_5_0.fsp ===
+[RANDOM] Best Time: 15913
+[GREEDY] Best Time: 15403
+[EA] Best Time: 14300
+[SA] Best Time: 14314
+=== ../test_cases/tai20_10_0.fsp ===
+[RANDOM] Best Time: 23470
+[GREEDY] Best Time: 24611
+[EA] Best Time: 21717
+[SA] Best Time: 22019
+=== ../test_cases/tai20_20_0.fsp ===
+[RANDOM] Best Time: 36374
+[GREEDY] Best Time: 35103
+[EA] Best Time: 34060
+[SA] Best Time: 34845
+=== ../test_cases/tai100_10_0.fsp ===
+[RANDOM] Best Time: 365756
+[GREEDY] Best Time: 373462
+[EA] Best Time: 334362
+[SA] Best Time: 331267
+=== ../test_cases/tai100_20_0.fsp ===
+[RANDOM] Best Time: 438579
+[GREEDY] Best Time: 440486
+[EA] Best Time: 403297
+[SA] Best Time: 416890
+=== ../test_cases/tai500_20_0.fsp ===
+[RANDOM] Best Time: 7963989
+

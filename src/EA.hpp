@@ -25,6 +25,7 @@ public:
   Solution run();
   SummaryStats runMultiple(int n_runs = 10);
   const std::vector<std::vector<Solution>>& getGenerationHistory() const { return generation_history; }
+  const std::vector<std::vector<Solution>>& getBestRunHistory() const { return best_run_history; }
 
 private:
   const PfspInstance& instance;
@@ -38,6 +39,7 @@ private:
   InitType      init;
   std::vector<Solution> population;
   std::vector<std::vector<Solution>> generation_history;
+  std::vector<std::vector<Solution>> best_run_history;
 
   void initialize_population();
 };

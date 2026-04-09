@@ -16,6 +16,7 @@ public:
   Solution run();
   SummaryStats runMultiple(int n_runs = 10);
   const std::vector<std::vector<Solution>>& getGenerationHistory() const { return history; }
+  const std::vector<std::vector<Solution>>& getBestRunHistory() const { return best_run_history; }
 
 private:
   const PfspInstance& instance;
@@ -24,4 +25,5 @@ private:
   int iterations;
   int log_interval;
   std::vector<std::vector<Solution>> history;
+  std::vector<std::vector<Solution>> best_run_history;
 };

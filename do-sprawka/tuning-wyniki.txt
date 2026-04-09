@@ -1,0 +1,77 @@
+1. ROZMIAR POPULACJI:
+      for (int pop : {100, 200, 500, 1000, 5000, 10000})
+
+
+
+metaheuristics/src on  tuning [?] took 4s
+❯ ./metaheuristics
+
+=== ../test_cases/tai20_5_0.fsp ===
+-- EA pop_size --
+  pop=100 gen=999      best=14094    avg=14190.2    std=75.7
+  pop=200 gen=499      best=14100    avg=14250.2    std=124.7
+  pop=500 gen=199      best=14094    avg=14118.0    std=27.1
+  pop=1000 gen=99      best=14044    avg=14083.4    std=26.9
+  pop=5000 gen=19      best=14033    avg=14054.0    std=19.5
+  pop=10000 gen=9      best=14213    avg=14295.6    std=54.2
+-- SA --
+  SA                   best=14163    avg=14359.4    std=196.2
+
+=== ../test_cases/tai20_10_0.fsp ===
+-- EA pop_size --
+  pop=100 gen=999      best=21432    avg=21691.8    std=257.2
+  pop=200 gen=499      best=21086    avg=21232.4    std=176.1
+  pop=500 gen=199      best=20955    avg=21090.6    std=98.4
+  pop=1000 gen=99      best=20955    avg=20996.8    std=40.9
+  pop=5000 gen=19      best=20955    avg=20974.6    std=16.2
+  pop=10000 gen=9      best=21374    avg=21488.8    std=83.7
+-- SA --
+  SA                   best=21001    avg=21547.2    std=436.8
+
+=== ../test_cases/tai20_20_0.fsp ===
+-- EA pop_size --
+  pop=100 gen=999      best=33972    avg=34451.0    std=268.6
+  pop=200 gen=499      best=33781    avg=34117.6    std=248.9
+  pop=500 gen=199      best=33735    avg=33955.8    std=159.9
+  pop=1000 gen=99      best=33816    avg=33947.0    std=95.9
+  pop=5000 gen=19      best=33799    avg=33836.8    std=30.4
+  pop=10000 gen=9      best=34251    avg=34371.4    std=77.9
+-- SA --
+  SA                   best=34320    avg=34421.6    std=60.0
+
+=== ../test_cases/tai100_10_0.fsp ===
+-- EA pop_size --
+  pop=100 gen=999      best=314007   avg=317723.6   std=2968.3
+  pop=200 gen=499      best=314485   avg=315830.0   std=1196.2
+  pop=500 gen=199      best=312728   avg=315084.2   std=1914.8
+  pop=1000 gen=99      best=313233   avg=314121.2   std=766.2
+  pop=5000 gen=19      best=330089   avg=331265.8   std=1449.7
+  pop=10000 gen=9      best=340056   avg=341049.8   std=1044.7
+-- SA --
+  SA                   best=309957   avg=311562.8   std=1634.6
+
+=== ../test_cases/tai100_20_0.fsp ===
+-- EA pop_size --
+  pop=100 gen=999      best=386480   avg=389943.6   std=2594.4
+  pop=200 gen=499      best=388353   avg=389926.6   std=1099.2
+  pop=500 gen=199      best=388497   avg=389877.6   std=1083.3
+  pop=1000 gen=99      best=386033   avg=390080.8   std=2713.3
+  pop=5000 gen=19      best=406498   avg=407276.0   std=580.2
+  pop=10000 gen=9      best=417894   avg=419075.6   std=726.5
+-- SA --
+  SA                   best=385105   avg=386373.2   std=1391.6
+
+=== ../test_cases/tai500_20_0.fsp ===
+-- EA pop_size --
+  pop=100 gen=999      best=7218198  avg=7238641.8  std=13201.4
+  pop=200 gen=499      best=7244652  avg=7263246.4  std=10215.7
+  pop=500 gen=199      best=7256266  avg=7289870.8  std=17256.9
+  pop=1000 gen=99      best=7280486  avg=7298238.8  std=11668.3
+  pop=5000 gen=19      best=7615646  avg=7623761.8  std=7917.8
+  pop=10000 gen=9      best=7723681  avg=7738554.0  std=11503.4
+-- SA --
+  SA                   best=6998539  avg=7027898.2  std=17267.2
+
+---
+
+WNIOSKI: Dla łatwych problemów duża populacja jest lepsza. Dla trudnych problemów mała populacja jest lepsza. Moja taktyka: Do problemu `tai20_20_0.fsp` włącznie, populacja 5000, od problemu `tai100_10_0.fsp` populacja 500

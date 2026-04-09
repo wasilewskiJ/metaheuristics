@@ -588,4 +588,55 @@ Baseline & 1167.1 & 1100.1 & 64.7 & 41.3 \\
 
 W przeprowadzonym badaniu Symulowane Wyżarzanie (SA) okazało się najbardziej skuteczną metaheurystyką dla CVRP, osiągając konsekwentnie lepsze wyniki od Algorytmu Ewolucyjnego we wszystkich konfiguracjach (średnia przewaga 1-6\%). Szczególnie imponujący był wynik w konfiguracji \hyperref[sec:baseline]{baseline}, gdzie SA osiągnęło lepsze rezultaty przy 5x mniejszym budżecie ewaluacji (37,000 vs 200,000). W tym miejscu należy wspomnieć, że różne budżety obliczeniowe w strojeniach utrudniają bezpośrednie porównanie jakości algorytmów. W strojeniach zaawansowanych (\hyperref[sec:tuning2]{\#2}-\hyperref[sec:tuning4]{\#4}) różnice jakości się zmniejszyły - SA miało nieznaczną przewagę, natomiast korzystało z większego budżetu obliczeniowego. Niemniej jednak, SA wyróżnia się prostotą implementacji, mniejszą liczbą hiperparametrów oraz brakiem kosztownych operacji genetycznych, co w całokształcie czyni je praktycznym wyborem dla problemów CVRP.
 
+\clearpage
+\section{Strojenie parametrów EA dla PFSP}
+\label{sec:tuning_pfsp}
+
+Eksperymenty przeprowadzono na 6 instancjach benchmarkowych z zestawu Taillarda (tai20\_5, tai20\_10, tai20\_20, tai100\_10, tai100\_20, tai500\_20). Budżet ewaluacji ustalono na $B = 100\,000$ wywołań funkcji celu. Każdą konfigurację uruchomiono $N = 5$ razy niezależnie; jako miarę jakości stosowano \textbf{średnią} wyników (avg), ponieważ wartość \emph{best} jest podatna na losowe odchylenia przy małej liczbie powtórzeń.
+
+\subsection{Strojenie rozmiaru populacji}
+
+Testowano sześć wartości \texttt{pop\_size}: 100, 200, 500, 1000, 5000, 10000. Liczba generacji dobierana była automatycznie tak, by całkowity budżet ewaluacji był dokładnie $B$:
+\[
+  \texttt{gen} = \frac{B - \texttt{pop\_size}}{\texttt{pop\_size}}
+\]
+Wzór uwzględnia koszt inicjalizacji populacji (jedno wywołanie \texttt{calculate\_total\_time} na osobnika).
+
+\begin{table}[H]
+\centering
+\caption{Wyniki strojenia \texttt{pop\_size} -- wybrane instancje (avg z 5 uruchomień, budżet $B=100\,000$)}
+\begin{tabular}{lrrrrr}
+\toprule
+\texttt{pop\_size} & gen & tai20\_20 avg & tai100\_10 avg & tai100\_20 avg & tai500\_20 avg \\
+\midrule
+100   & 999  & 34451 & 317724 & 389944 & \textbf{7238642} \\
+200   & 499  & 34118 & 315830 & 389927 & 7263246 \\
+500   & 199  & 33956 & 315084 & 389878 & 7289871 \\
+1000  & 99   & 33947 & 314121 & 390081 & 7298239 \\
+5000  & 19   & \textbf{33837} & 331266 & 407276 & 7623762 \\
+10000 & 9    & 34371 & 341050 & 419076 & 7738554 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Wnioski i wyjaśnienie}
+
+Wyniki ujawniają wyraźną, odwrotną zależność między optymalnym rozmiarem populacji a trudnością instancji:
+
+\begin{itemize}
+    \item \textbf{Małe instancje (tai20\_*):} duża populacja (5000) daje najlepsze wyniki. Przestrzeń rozwiązań jest stosunkowo mała, więc nawet 19 generacji wystarczy do konwergencji -- a bogata różnorodność genetyczna dużej populacji zapobiega utknięciu w lokalnym minimum.
+
+    \item \textbf{Duże instancje (tai100\_*, tai500\_20):} mała populacja (100--500) wygrywa. Przestrzeń rozwiązań jest astronomicznie większa, a operatory krzyżowania i mutacji poruszają się po niej ,,drobnym krokiem''. Przy dużej populacji i małej liczbie generacji (9--19) algorytm praktycznie nie ma czasu ewoluować -- większość budżetu pochłania inicjalizacja. Mała populacja z wieloma generacjami (999) pozwala natomiast na iteracyjne doskonalenie rozwiązań przez setki pokoleń.
+\end{itemize}
+
+Istnieje zatem fundamentalny kompromis: \emph{rozmiar populacji kontroluje szerokość przeszukiwania, a liczba generacji -- jego głębokość}. Dla trudnych instancji głębokość jest ważniejsza, bo operatory genetyczne potrzebują wielu iteracji, by złożyć dobre rozwiązanie z fragmentów rodziców.
+
+Dla wartości \texttt{pop\_size} $\geq$ 5000 na instancjach tai100/tai500 wyniki drastycznie się pogarszają -- przy 9--19 generacjach algorytm de facto wykonuje losową inicjalizację z minimalną ewolucją.
+
+\textbf{Przyjęte wartości:}
+\begin{itemize}
+    \item Instancje do tai20\_20 włącznie: \texttt{pop\_size = 5000}
+    \item Instancje od tai100\_10 wzwyż: \texttt{pop\_size = 500}
+\end{itemize}
+
 \end{document}

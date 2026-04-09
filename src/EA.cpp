@@ -49,9 +49,14 @@ void EA::initialize_population() {
 
 SummaryStats EA::runMultiple(int n_runs) {
   std::vector<int> best_per_run;
+  int best_time = std::numeric_limits<int>::max();
   for (int i = 0; i < n_runs; i++) {
     Solution best = run();
     best_per_run.push_back(best.total_time);
+    if (best.total_time < best_time) {
+      best_time = best.total_time;
+      best_run_history = generation_history;
+    }
   }
   return compute_multirun_stats(best_per_run);
 }
