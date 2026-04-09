@@ -28,15 +28,23 @@ Solution selection_tournament(const std::vector<Solution>& population, int tour_
 
 EA::EA(const PfspInstance& instance, int pop_size, int generations,
        float Px, float Pm, int tour_size,
-       CrossoverType crossover, MutationType mutation)
+       CrossoverType crossover, MutationType mutation, InitType init)
     : instance(instance), pop_size(pop_size), generations(generations),
       Px(Px), Pm(Pm), tour_size(tour_size),
-      crossover(crossover), mutation(mutation) {}
+      crossover(crossover), mutation(mutation), init(init) {}
 
 void EA::initialize_population() {
   population.clear();
-  for (int i = 0; i < pop_size; i++)
-    population.push_back(instance.randomAlg());
+  if (init == InitType::GREEDY) {
+    // use greedy solutions for first min(pop_size, num_jobs) individuals, rest random
+    auto greedy = instance.runGreedyAlg(-1, pop_size);
+    for (auto& s : greedy) population.push_back(s);
+    while ((int)population.size() < pop_size)
+      population.push_back(instance.randomAlg());
+  } else {
+    for (int i = 0; i < pop_size; i++)
+      population.push_back(instance.randomAlg());
+  }
 }
 
 SummaryStats EA::runMultiple(int n_runs) {

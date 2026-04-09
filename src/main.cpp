@@ -20,6 +20,7 @@ static const float  EA_PM   = 0.1;
 static const int    EA_TOUR = 5;
 static const CrossoverType EA_CROSS = CrossoverType::OX;
 static const MutationType  EA_MUT   = MutationType::SWAP;
+static const InitType      EA_INIT  = InitType::RANDOM;
 
 static const double SA_TEMP    = -1.0;   // -1 = auto-estimate from instance
 static const double SA_COOLING = 0.995;
@@ -89,6 +90,14 @@ void run_tuning(const std::string& path) {
     print_stats("mutation=" + label, ea.runMultiple(N_RUNS_TUNING));
   }
 
+  // --- EA: initialization ---
+  std::cout << "\n-- EA init --\n";
+  for (auto [label, ini] : std::vector<std::pair<std::string, InitType>>{
+      {"RANDOM", InitType::RANDOM}, {"GREEDY", InitType::GREEDY}}) {
+    EA ea(instance, EA_POP, EA_GEN, EA_PX, EA_PM, EA_TOUR, EA_CROSS, EA_MUT, ini);
+    print_stats("init=" + label, ea.runMultiple(N_RUNS_TUNING));
+  }
+
   // --- SA: varying initial_temp (scaled to instance) ---
   std::cout << "\n-- SA initial_temp --\n";
   double base_temp = SA::estimate_initial_temp(instance);
@@ -127,7 +136,7 @@ void run_comparison(const std::string& path) {
             << " avg=" << greedyStats.avg << " std=" << greedyStats.std_dev << "\n";
 
   // EA - 10 runs + single run for chart
-  EA ea(instance, EA_POP, EA_GEN, EA_PX, EA_PM, EA_TOUR, EA_CROSS, EA_MUT);
+  EA ea(instance, EA_POP, EA_GEN, EA_PX, EA_PM, EA_TOUR, EA_CROSS, EA_MUT, EA_INIT);
   print_stats("EA", ea.runMultiple(N_RUNS_FINAL));
   ea.run();
   Logger(ea.getGenerationHistory(), base + "_EA.csv").dumpToFile();
