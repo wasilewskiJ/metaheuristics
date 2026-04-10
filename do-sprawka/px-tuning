@@ -1,0 +1,66 @@
+PX:
+
+metaheuristics/src on  tuning [?⇕] took 4s
+❯ ./metaheuristics
+
+=== ../test_cases/tai20_5_0.fsp ===
+-- EA Px --
+  Px=0.500000          best=14033    avg=14067.0    std=25.3
+  Px=0.700000          best=14042    avg=14049.2    std=7.0
+  Px=0.900000          best=14033    avg=14045.4    std=8.8
+  Px=0.950000          best=14042    avg=14057.6    std=9.4
+  Px=0.980000          best=14041    avg=14049.2    std=8.8
+-- SA --
+  SA                   best=14233    avg=14342.0    std=83.6
+
+=== ../test_cases/tai20_10_0.fsp ===
+-- EA Px --
+  Px=0.500000          best=20955    avg=20977.0    std=29.8
+  Px=0.700000          best=20955    avg=20978.4    std=24.0
+  Px=0.900000          best=20911    avg=20946.6    std=17.8
+  Px=0.950000          best=20955    avg=20963.6    std=15.7
+  Px=0.980000          best=20955    avg=20963.4    std=15.8
+-- SA --
+  SA                   best=21189    avg=21694.0    std=280.7
+
+=== ../test_cases/tai20_20_0.fsp ===
+-- EA Px --
+  Px=0.500000          best=33776    avg=33857.6    std=45.6
+  Px=0.700000          best=33623    avg=33768.8    std=74.3
+  Px=0.900000          best=33623    avg=33773.0    std=75.4
+  Px=0.950000          best=33781    avg=33802.6    std=18.0
+  Px=0.980000          best=33781    avg=33831.4    std=30.1
+-- SA --
+  SA                   best=34308    avg=34443.4    std=101.0
+
+=== ../test_cases/tai100_10_0.fsp ===
+-- EA Px --
+  Px=0.500000          best=316089   avg=318556.8   std=2566.4
+  Px=0.700000          best=313395   avg=316222.0   std=1847.0
+  Px=0.900000          best=310648   avg=311625.0   std=949.3
+  Px=0.950000          best=311969   avg=313027.8   std=924.9
+  Px=0.980000          best=310967   avg=311889.4   std=983.3
+-- SA --
+  SA                   best=310636   avg=312564.0   std=1282.8
+
+=== ../test_cases/tai100_20_0.fsp ===
+-- EA Px --
+  Px=0.500000          best=388019   avg=391249.6   std=2271.0
+  Px=0.700000          best=386127   avg=390330.4   std=4335.8
+  Px=0.900000          best=385527   avg=387485.2   std=1057.7
+  Px=0.950000          best=382716   avg=384111.6   std=1710.3
+  Px=0.980000          best=383868   avg=385569.2   std=1125.1
+-- SA --
+  SA                   best=384274   avg=386049.6   std=1484.1
+
+=== ../test_cases/tai500_20_0.fsp ===
+-- EA Px --
+  Px=0.500000          best=7276738  avg=7318584.8  std=30119.1
+  Px=0.700000          best=7233520  avg=7273953.6  std=29149.8
+  Px=0.900000          best=7172157  avg=7205857.6  std=35486.0
+  Px=0.950000          best=7166141  avg=7206758.6  std=25838.0
+  Px=0.980000          best=7165945  avg=7185857.6  std=13168.6
+-- SA --
+  SA                   best=6973033  avg=7000326.4  std=18586.5
+
+
