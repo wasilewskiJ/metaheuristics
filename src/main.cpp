@@ -23,15 +23,16 @@ static const double SA_COOLING = 0.995;
 struct InstanceConfig {
   int   pop_size;
   float px;
+  float pm;
 };
 
 static const std::vector<std::pair<std::string, InstanceConfig>> TEST_CASES = {
-    {"../test_cases/tai20_5_0.fsp",   {5000, 0.90f}},
-    {"../test_cases/tai20_10_0.fsp",  {5000, 0.90f}},
-    {"../test_cases/tai20_20_0.fsp",  {5000, 0.70f}},
-    {"../test_cases/tai100_10_0.fsp", {500,  0.90f}},
-    {"../test_cases/tai100_20_0.fsp", {500,  0.95f}},
-    {"../test_cases/tai500_20_0.fsp", {500,  0.98f}},
+    {"../test_cases/tai20_5_0.fsp",   {5000, 0.90f, 0.01f}},
+    {"../test_cases/tai20_10_0.fsp",  {5000, 0.90f, 0.05f}},
+    {"../test_cases/tai20_20_0.fsp",  {5000, 0.70f, 0.05f}},
+    {"../test_cases/tai100_10_0.fsp", {500,  0.90f, 0.40f}},
+    {"../test_cases/tai100_20_0.fsp", {500,  0.95f, 0.40f}},
+    {"../test_cases/tai500_20_0.fsp", {500,  0.98f, 0.40f}},
 };
 
 void print_stats(const std::string& label, const SummaryStats& s) {
@@ -52,17 +53,23 @@ int main() {
 
       int   pop = cfg.pop_size;
       float px  = cfg.px;
+      float pm  = cfg.pm;
       int   gen = (BUDGET - pop) / pop;
 
-      // --- Tune EA Pm ---
-      std::cout << "-- EA Pm --\n";
-      for (float pm : {0.01f, 0.05f, 0.1f, 0.2f, 0.4f}) {
-        instance.reset_eval_counter();
-        EA ea(instance, pop, gen, px, pm, EA_TOUR, EA_CROSS, EA_MUT, EA_INIT);
-        SummaryStats s = ea.runMultiple(N_RUNS);
-        assert(instance.get_eval_counter() == N_RUNS * BUDGET);
-        print_stats("Pm=" + std::to_string(pm), s);
-        Logger(ea.getBestRunHistory(), base + "_EA_Pm" + std::to_string(pm) + ".csv").dumpToFile();
+      // --- Tune EA operator combinations (with tuned Px and Pm) ---
+      std::cout << "-- EA operators --\n";
+      for (auto [cx_label, cx] : std::vector<std::pair<std::string, CrossoverType>>{
+          {"OX", CrossoverType::OX}, {"PMX", CrossoverType::PMX}, {"CX", CrossoverType::CX}}) {
+        for (auto [mut_label, mut] : std::vector<std::pair<std::string, MutationType>>{
+            {"SWAP", MutationType::SWAP}, {"INV", MutationType::INVERSION}}) {
+          std::string label = cx_label + "+" + mut_label;
+          instance.reset_eval_counter();
+          EA ea(instance, pop, gen, px, pm, EA_TOUR, cx, mut, EA_INIT);
+          SummaryStats s = ea.runMultiple(N_RUNS);
+          assert(instance.get_eval_counter() == N_RUNS * BUDGET);
+          print_stats(label, s);
+          Logger(ea.getBestRunHistory(), base + "_EA_" + label + ".csv").dumpToFile();
+        }
       }
 
       // --- SA for reference ---
