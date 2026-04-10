@@ -12,7 +12,7 @@
 \usepackage{hyperref}
 \usepackage{pdflscape}
 
-\title{Algorytmy Optymalizacji Inspirowane Naturą\\Projekt: Permutacyjny Problem Przepływowy (PFSP)}
+\title{Metody Optymalizacji\\Projekt: PFSP}
 \author{Jakub Wasilewski 263852}
 \date{10.04.2026}
 
@@ -23,12 +23,12 @@
 \clearpage
 
 \section{Sformułowanie zadania}
-Celem jest implementacja i przebadanie metaheurystyki Algorytmu Ewolucyjnego (EA) dla permutacyjnego problemu przepływowego (PFSP -- \textit{Permutation Flow Shop Problem}) oraz porównanie jej z metodami nieewolucyjnymi: algorytmem zachłannym (greedy), symulowanym wyżarzaniem (SA) i losowym przeszukiwaniem.
+Celem zadania była implementacja i przebadanie metaheurystyki Algorytmu Ewolucyjnego (EA) dla permutacyjnego problemu przepływowego (PFSP -- \textit{Permutation Flow Shop Problem}) oraz porównanie jej z metodami nieewolucyjnymi: algorytmem zachłannym (greedy), symulowanym wyżarzaniem (SA) i losowym przeszukiwaniem.
 
-W PFSP mamy $n$ zadań i $m$ maszyn. Każde zadanie musi być wykonane na każdej maszynie w tej samej ustalonej kolejności (maszyna 1 $\rightarrow$ 2 $\rightarrow \ldots \rightarrow$ m). Czas przetwarzania zadania $j$ na maszynie $i$ wynosi $p_{ij}$. Szukamy permutacji zadań minimalizującej \textbf{makespan} -- czas zakończenia ostatniego zadania na ostatniej maszynie ($C_{\max}$).
+W PFSP rozpatrywano $n$ zadań i $m$ maszyn. Każde zadanie musiało być wykonane na każdej maszynie w tej samej ustalonej kolejności (maszyna 1 $\rightarrow$ 2 $\rightarrow \ldots \rightarrow$ m). Czas przetwarzania zadania $j$ na maszynie $i$ wynosił $p_{ij}$. Poszukiwano permutacji zadań minimalizującej \textbf{makespan} -- czas zakończenia ostatniego zadania na ostatniej maszynie ($C_{\max}$).
 
 \section{Sposób rozwiązywania zadania}
-Rozwiązania kodowane są jako permutacje $n$ zadań. Ocena rozwiązania to obliczenie makespanu poprzez symulację harmonogramu: dla każdej maszyny i każdego zadania (w kolejności permutacji) czas zakończenia wyznaczany jest jako maksimum czasu zwolnienia maszyny i czasu zakończenia poprzedniego zadania na tej samej maszynie, powiększony o czas przetwarzania. Wszystkie metaheurystyki operują bezpośrednio na permutacjach.
+Rozwiązania były kodowane jako permutacje $n$ zadań. Ocena rozwiązania polegała na obliczeniu makespanu poprzez symulację harmonogramu: dla każdej maszyny i każdego zadania (w kolejności permutacji) czas zakończenia wyznaczany był jako maksimum czasu zwolnienia maszyny i czasu zakończenia poprzedniego zadania na tej samej maszynie, powiększony o czas przetwarzania. Wszystkie metaheurystyki operowały bezpośrednio na permutacjach.
 
 \section{Metody użyte do rozwiązania zadania}
 \begin{itemize}
@@ -43,34 +43,34 @@ Rozwiązania kodowane są jako permutacje $n$ zadań. Ocena rozwiązania to obli
 \subsection{Algorytm losowy}
 \label{sec:random}
 \begin{itemize}
-    \item Proste losowe przeszukiwanie przestrzeni rozwiązań.
-    \item W każdej iteracji generowana jest losowa permutacja $n$ zadań i obliczany jej makespan.
+    \item Zastosowano proste losowe przeszukiwanie przestrzeni rozwiązań.
+    \item W każdej iteracji generowana była losowa permutacja $n$ zadań i obliczany jej makespan.
     \item \textbf{Parametry:} liczba iteracji = budżet $B$.
-    \item \textbf{Log:} co iterację zapisywany jest bieżący koszt; Logger śledzi best/avg/worst w czasie.
+    \item \textbf{Log:} co iterację zapisywany był bieżący koszt; Logger śledził best/avg/worst w czasie.
 \end{itemize}
 
 \subsection{Algorytm zachłanny}
 \label{sec:greedy}
 \begin{itemize}
-    \item Wielostartowy algorytm konstrukcyjny.
-    \item Dla każdego punktu startowego (zadania): buduje permutację, w każdym kroku wstawiając kolejne zadanie na pozycję minimalizującą bieżący makespan (NEH-like).
-    \item \textbf{Multi-start:} uruchomienia dla różnych zadań startowych, zwracane jest najlepsze znalezione rozwiązanie.
+    \item Zaimplementowano wielostartowy algorytm konstrukcyjny.
+    \item Dla każdego punktu startowego (zadania) budowana była permutacja -- w każdym kroku kolejne zadanie wstawiano na pozycję minimalizującą bieżący makespan (podejście NEH-like).
+    \item \textbf{Multi-start:} przeprowadzano uruchomienia dla różnych zadań startowych; zwracane było najlepsze znalezione rozwiązanie.
     \item \textbf{Parametry:} liczba restartów (domyślnie = liczba zadań).
 \end{itemize}
 
 \subsection{Symulowane wyżarzanie (SA)}
 \label{sec:sa}
 \begin{itemize}
-    \item Metaheurystyka inspirowana procesem wyżarzania metali.
+    \item Zaimplementowano metaheurystykę inspirowaną procesem wyżarzania metali.
     \item \textbf{Rozwiązanie startowe:} losowa permutacja (nowe w każdym uruchomieniu).
     \item \textbf{Sąsiedztwo:} operator swap -- zamiana dwóch losowych pozycji w permutacji.
     \item \textbf{Akceptacja:}
     \begin{itemize}
-        \item Ruch poprawiający ($\Delta < 0$): zawsze akceptowany.
+        \item Ruch poprawiający ($\Delta < 0$): zawsze był akceptowany.
         \item Ruch pogarszający: akceptowany z prawdopodobieństwem $\exp(-\Delta/T)$.
     \end{itemize}
     \item \textbf{Schemat chłodzenia:} geometryczny, $T_{t+1} = \alpha \cdot T_t$, gdzie $\alpha$ to współczynnik chłodzenia.
-    \item \textbf{Temperatura początkowa $T_0$:} estymowana automatycznie ze wzoru
+    \item \textbf{Temperatura początkowa $T_0$:} estymowana była automatycznie ze wzoru
     $T_0 = -\overline{\Delta^+} / \ln(p_0)$,
     gdzie $\overline{\Delta^+}$ to średni dodatni delta z 200 losowych ruchów swap, a $p_0 = 0{,}8$ to docelowe prawdopodobieństwo akceptacji ruchu pogarszającego na starcie.
     \item \textbf{Kryterium stopu:} po wykonaniu dokładnie $B$ ewaluacji (kroków pętli).
@@ -79,31 +79,31 @@ Rozwiązania kodowane są jako permutacje $n$ zadań. Ocena rozwiązania to obli
 \subsection{Algorytm ewolucyjny (EA)}
 \label{sec:ea}
 \begin{itemize}
-    \item Metaheurystyka inspirowana ewolucją biologiczną.
-    \item \textbf{Inicjalizacja:} populacja losowych permutacji (rozmiar \texttt{pop\_size}), każda oceniana -- koszt $= 1$ ewaluacja.
-    \item \textbf{Selekcja:} turniejowa -- losujemy \texttt{tour\_size} osobników i wybieramy najlepszego.
+    \item Zaimplementowano metaheurystykę inspirowaną ewolucją biologiczną.
+    \item \textbf{Inicjalizacja:} tworzona była populacja losowych permutacji (rozmiar \texttt{pop\_size}), każda oceniana -- koszt $= 1$ ewaluacja.
+    \item \textbf{Selekcja:} turniejowa -- losowano \texttt{tour\_size} osobników i wybierano najlepszego.
     \item \textbf{Krzyżowanie:}
     \begin{itemize}
-        \item \textbf{OX} (Ordered Crossover) -- kopiuje segment z rodzica 1, uzupełnia brakujące elementy w kolejności z rodzica 2, zachowując względną kolejność.
-        \item \textbf{PMX} (Partially Mapped Crossover) -- wymienia segmenty i naprawia konflikty przez mapowanie pozycji.
-        \item \textbf{CX} (Cycle Crossover) -- zachowuje bezwzględne pozycje genów przez cykl mapowania.
-        \item Stosowane z prawdopodobieństwem \texttt{Px}; w przeciwnym razie kopiowany jest rodzic 1.
+        \item \textbf{OX} (Ordered Crossover) -- kopiowany był segment z rodzica 1, brakujące elementy uzupełniano w kolejności z rodzica 2, zachowując względną kolejność.
+        \item \textbf{PMX} (Partially Mapped Crossover) -- wymieniano segmenty i naprawiano konflikty przez mapowanie pozycji.
+        \item \textbf{CX} (Cycle Crossover) -- zachowywane były bezwzględne pozycje genów przez cykl mapowania.
+        \item Krzyżowanie stosowane było z prawdopodobieństwem \texttt{Px}; w przeciwnym razie kopiowany był rodzic 1.
     \end{itemize}
     \item \textbf{Mutacja:}
     \begin{itemize}
         \item \textbf{SWAP} -- zamiana dwóch losowych pozycji w permutacji.
         \item \textbf{INVERSION} -- odwrócenie losowego segmentu permutacji.
-        \item Stosowana z prawdopodobieństwem \texttt{Pm}.
+        \item Mutacja stosowana była z prawdopodobieństwem \texttt{Pm}.
     \end{itemize}
     \item \textbf{Kryterium stopu:} po wykonaniu dokładnie $B$ ewaluacji.
     \item \textbf{Budżet:} $\texttt{pop\_size} \cdot (\texttt{gen} + 1) = B$, gdzie $+1$ uwzględnia koszt inicjalizacji populacji. Stąd $\texttt{gen} = (B - \texttt{pop\_size}) / \texttt{pop\_size}$.
 \end{itemize}
 
 \subsection{Kontrola budżetu}
-Wszystkie algorytmy korzystają ze wspólnego licznika wywołań funkcji celu (\texttt{eval\_counter}) w klasie \texttt{PfspInstance}. Po każdym eksperymencie weryfikowany jest assert: dla EA -- $N\_RUNS \cdot B$, dla SA -- $N\_RUNS \cdot (B+1)$ (dodatkowe wywołanie z losowego startu).
+Wszystkie algorytmy korzystały ze wspólnego licznika wywołań funkcji celu (\texttt{eval\_counter}) w klasie \texttt{PfspInstance}. Po każdym eksperymencie weryfikowany był assert: dla EA -- $N\_RUNS \cdot B$, dla SA -- $N\_RUNS \cdot (B+1)$ (dodatkowe wywołanie z losowego startu).
 
 \section{Pliki wejściowe}
-Instancje z zestawu benchmarkowego Taillarda:
+Wykorzystano instancje z zestawu benchmarkowego Taillarda:
 \begin{itemize}
     \item \textbf{Łatwe:} tai20\_5 (20 zadań, 5 maszyn), tai20\_10 (20 zadań, 10 maszyn), tai20\_20 (20 zadań, 20 maszyn)
     \item \textbf{Średnie:} tai100\_10 (100 zadań, 10 maszyn), tai100\_20 (100 zadań, 20 maszyn)
@@ -122,7 +122,7 @@ Instancje z zestawu benchmarkowego Taillarda:
 \section{Wyniki badań przed strojeniem}
 \label{sec:baseline}
 
-Tabela przedstawia wyniki z domyślnymi parametrami ($N=5$ powtórzeń, $B=100\,000$). Dla EA: \texttt{pop=100}, \texttt{gen=999}.
+Poniższa tabela przedstawia wyniki uzyskane z domyślnymi parametrami ($N=5$ powtórzeń, $B=100\,000$). Dla EA zastosowano: \texttt{pop=100}, \texttt{gen=999}.
 
 \begin{table}[H]
 \centering
@@ -143,9 +143,9 @@ tai500\_20 & 7218198 & 7238642 & 13201.4 & 6998539 & 7027898 & 17267.2 \\
 
 \textbf{Wnioski (etap bazowy):}
 \begin{itemize}
-    \item Na małych instancjach (tai20\_*) EA z domyślną populacją 100 jest konkurencyjny lub lepszy od SA.
-    \item Na dużych instancjach (tai100\_*, tai500\_20) SA wyraźnie dominuje -- przewaga rośnie ze skalą problemu (dla tai500\_20 SA jest lepszy o ok. 3\%).
-    \item Duże odchylenie standardowe EA wskazuje na niestabilność przy małej populacji.
+    \item Na małych instancjach (tai20\_*) EA z domyślną populacją 100 okazał się konkurencyjny lub lepszy od SA.
+    \item Na dużych instancjach (tai100\_*, tai500\_20) SA wyraźnie dominowało -- przewaga rosła ze skalą problemu (dla tai500\_20 SA było lepsze o ok. 3\%).
+    \item Duże odchylenie standardowe EA wskazywało na niestabilność przy małej populacji.
 \end{itemize}
 
 \section{Strojenie parametrów}
@@ -155,7 +155,7 @@ Strojenie przeprowadzono iteracyjnie, każdorazowo utrwalając najlepszy paramet
 
 \subsection{Rozmiar populacji (\texttt{pop\_size})}
 
-Testowano: 100, 200, 500, 1000, 5000, 10000. Liczba generacji dobierana automatycznie: $\texttt{gen} = (B - \texttt{pop}) / \texttt{pop}$.
+Przetestowano wartości: 100, 200, 500, 1000, 5000, 10000. Liczba generacji dobierana była automatycznie: $\texttt{gen} = (B - \texttt{pop}) / \texttt{pop}$.
 
 \begin{table}[H]
 \centering
@@ -174,13 +174,13 @@ pop\_size (gen) & tai20\_5 & tai20\_10 & tai20\_20 & tai100\_10 & tai100\_20 & t
 \end{tabular}
 \end{table}
 
-\textbf{Wnioski:} Ujawnia się odwrotna zależność między optymalnym \texttt{pop\_size} a trudnością instancji. Na małych instancjach duża populacja (5000) wygrywa -- przestrzeń rozwiązań jest mała, różnorodność genetyczna jest ważniejsza niż liczba generacji. Na dużych instancjach mała populacja z wieloma generacjami (100, 999 gen) wygrywa -- przestrzeń jest ogromna, algorytm potrzebuje głębokiej iteracyjnej poprawy, a nie szerokiej inicjalizacji. Przy \texttt{pop=5000} na tai100/tai500 liczba generacji spada do 9--19, co praktycznie uniemożliwia ewolucję.
+\textbf{Wnioski:} Ujawniła się odwrotna zależność między optymalnym \texttt{pop\_size} a trudnością instancji. Na małych instancjach duża populacja (5000) wygrywała -- przestrzeń rozwiązań była mała, a różnorodność genetyczna okazała się ważniejsza niż liczba generacji. Na dużych instancjach mała populacja z wieloma generacjami (100, 999 gen) wygrywała -- przestrzeń była ogromna, algorytm potrzebował głębokiej iteracyjnej poprawy, a nie szerokiej inicjalizacji. Przy \texttt{pop=5000} na tai100/tai500 liczba generacji spadała do 9--19, co praktycznie uniemożliwiało ewolucję.
 
 \textbf{Przyjęte wartości:} \texttt{pop=5000} dla instancji tai20\_*, \texttt{pop=500} dla tai100\_* i tai500\_20.
 
 \subsection{Operatory genetyczne}
 
-Przetestowano macierz 3 operatorów krzyżowania × 2 operatorów mutacji = 6 kombinacji, z domyślnymi \texttt{Px=0.7}, \texttt{Pm=0.1}.
+Przetestowano macierz 3 operatorów krzyżowania × 2 operatorów mutacji = 6 kombinacji, przy domyślnych \texttt{Px=0.7}, \texttt{Pm=0.1}.
 
 \begin{table}[H]
 \centering
@@ -199,19 +199,19 @@ CX+INV   & 14200 & 21432 & 34289 & 326987 & 405567 & 7536259 \\
 \end{tabular}
 \end{table}
 
-\textbf{Wnioski:} OX+SWAP wygrywa we wszystkich sześciu instancjach.
+\textbf{Wnioski:} Kombinacja OX+SWAP wygrała we wszystkich sześciu instancjach.
 
-SWAP bije INVERSION niezależnie od krzyżowania -- w PFSP liczy się \emph{względna kolejność} zadań, a nie bezwzględne pozycje. Inversion odwraca segment, niszcząc starannie wypracowane przez OX bloki kolejności. SWAP zamienia tylko dwa elementy, zachowując resztę struktury.
+SWAP okazał się lepszy od INVERSION niezależnie od krzyżowania -- w PFSP kluczowa jest \emph{względna kolejność} zadań, a nie bezwzględne pozycje. INVERSION odwracał segment, niszcząc starannie wypracowane przez OX bloki kolejności. SWAP zamieniał tylko dwa elementy, zachowując resztę struktury.
 
-CX wypada najgorzej -- jest zaprojektowany do zachowania bezwzględnych pozycji genów, co nie ma znaczenia w PFSP.
+CX wypadł najgorzej -- jest zaprojektowany do zachowania bezwzględnych pozycji genów, co nie ma znaczenia w PFSP.
 
-PMX plasuje się pośrodku -- częściowe mapowanie daje lepsze wyniki niż CX, ale gorsze niż OX. OX najlepiej zachowuje ciągłe bloki względnej kolejności, co odpowiada strukturze dobrego harmonogramu w PFSP.
+PMX uplasował się pośrodku -- częściowe mapowanie dawało lepsze wyniki niż CX, ale gorsze niż OX. OX najlepiej zachowywał ciągłe bloki względnej kolejności, co odpowiadało strukturze dobrego harmonogramu w PFSP.
 
 \textbf{Przyjęta konfiguracja:} \texttt{crossover = OX}, \texttt{mutation = SWAP}.
 
 \subsection{Prawdopodobieństwo krzyżowania (\texttt{Px})}
 
-Testowano: 0.50, 0.70, 0.90, 0.95, 0.98. Operatory: OX+SWAP, per-instancja \texttt{pop\_size}.
+Przetestowano wartości: 0.50, 0.70, 0.90, 0.95, 0.98. Zastosowano operatory OX+SWAP oraz per-instancja \texttt{pop\_size}.
 
 \begin{table}[H]
 \centering
@@ -229,15 +229,15 @@ Px & tai20\_5 & tai20\_10 & tai20\_20 & tai100\_10 & tai100\_20 & tai500\_20 \\
 \end{tabular}
 \end{table}
 
-\textbf{Wnioski:} Im trudniejsza instancja, tym wyższe \texttt{Px} jest korzystniejsze. Na małych instancjach różnice są marginalne (szum przy $N=5$). Na dużych instancjach wzrost \texttt{Px} od 0.50 do 0.98 daje wyraźną poprawę (tai500\_20: $-1{,}8\%$).
+\textbf{Wnioski:} Im trudniejsza instancja, tym wyższe \texttt{Px} okazywało się korzystniejsze. Na małych instancjach różnice były marginalne (szum przy $N=5$). Na dużych instancjach wzrost \texttt{Px} od 0.50 do 0.98 dał wyraźną poprawę (tai500\_20: $-1{,}8\%$).
 
-Krzyżowanie jest operatorem budowania rozwiązań z fragmentów rodziców. W dużej przestrzeni dobre częściowe struktury są rzadkie -- krzyżowanie pozwala je łączyć. Przy niskim \texttt{Px} EA degeneruje się do lokalnego przeszukiwania z mutacją.
+Krzyżowanie jest operatorem budowania rozwiązań z fragmentów rodziców. W dużej przestrzeni dobre częściowe struktury były rzadkie -- krzyżowanie pozwalało je łączyć. Przy niskim \texttt{Px} EA degenerował się do lokalnego przeszukiwania z mutacją.
 
 \textbf{Przyjęte wartości per-instancja:} tai20\_5: 0.90, tai20\_10: 0.90, tai20\_20: 0.70, tai100\_10: 0.90, tai100\_20: 0.95, tai500\_20: 0.98.
 
 \subsection{Prawdopodobieństwo mutacji (\texttt{Pm})}
 
-Testowano: 0.01, 0.05, 0.10, 0.20, 0.40. Konfiguracja: OX+SWAP, per-instancja \texttt{pop\_size} i \texttt{Px}.
+Przetestowano wartości: 0.01, 0.05, 0.10, 0.20, 0.40. Zastosowano konfigurację: OX+SWAP, per-instancja \texttt{pop\_size} i \texttt{Px}.
 
 \begin{table}[H]
 \centering
@@ -255,9 +255,9 @@ Pm & tai20\_5 & tai20\_10 & tai20\_20 & tai100\_10 & tai100\_20 & tai500\_20 \\
 \end{tabular}
 \end{table}
 
-\textbf{Wnioski:} Odwrotny wzorzec niż przy \texttt{Px}: im trudniejsza instancja, tym wyższe \texttt{Pm} jest korzystniejsze. Na tai100/tai500 trend jest monotonicznie rosnący -- \texttt{Pm=0.40} wygrywa wyraźnie (tai500\_20: poprawa o 0.7\% vs \texttt{Pm=0.01}).
+\textbf{Wnioski:} Zaobserwowano odwrotny wzorzec niż przy \texttt{Px}: im trudniejsza instancja, tym wyższe \texttt{Pm} okazywało się korzystniejsze. Na tai100/tai500 trend był monotonicznie rosnący -- \texttt{Pm=0.40} wygrało wyraźnie (tai500\_20: poprawa o 0.7\% vs \texttt{Pm=0.01}).
 
-Przy dużej przestrzeni i wysokim \texttt{Px} krzyżowanie dominuje reprodukcję -- populacja szybko traci różnorodność i zbiega do lokalnego minimum. Mutacja przy wysokim \texttt{Pm} pełni rolę dywersyfikatora, regularnie wstrzykując perturbacje. Jest to szczególnie ważne gdy przestrzeń jest wielowymiarowa i pełna lokalnych minimów. \texttt{Px} i \texttt{Pm} działają komplementarnie -- na trudnych instancjach oba powinny być wysokie.
+Przy dużej przestrzeni i wysokim \texttt{Px} krzyżowanie dominowało reprodukcję -- populacja szybko traciła różnorodność i zbiegała do lokalnego minimum. Mutacja przy wysokim \texttt{Pm} pełniła rolę dywersyfikatora, regularnie wstrzykując perturbacje. Było to szczególnie istotne gdy przestrzeń była wielowymiarowa i pełna lokalnych minimów. \texttt{Px} i \texttt{Pm} działały komplementarnie -- na trudnych instancjach oba parametry powinny być wysokie.
 
 \textbf{Przyjęte wartości per-instancja:} tai20\_5: 0.01, tai20\_10: 0.05, tai20\_20: 0.05, tai100\_10: 0.40, tai100\_20: 0.40, tai500\_20: 0.40.
 
@@ -299,9 +299,9 @@ $\alpha$ & t0 mult & tai20\_5 & tai20\_10 & tai20\_20 & tai100\_10 & tai100\_20 
 
 \subsubsection{Wnioski}
 
-\textbf{Współczynnik chłodzenia:} $\alpha = 0.999$ wygrywa na 5 z 6 instancji. Wolne chłodzenie pozwala algorytmowi spędzić więcej czasu w fazie eksploracji przy umiarkowanej temperaturze -- kluczowe gdy przestrzeń rozwiązań jest złożona. Wyjątek stanowi tai500\_20, gdzie $\alpha = 0.990$ jest najlepszy, jednak różnice między wszystkimi konfiguracjami na tej instancji wynoszą poniżej 0.2\% i mieszczą się w szumie statystycznym przy $N=5$.
+\textbf{Współczynnik chłodzenia:} $\alpha = 0.999$ wygrał na 5 z 6 instancji. Wolne chłodzenie pozwalało algorytmowi spędzić więcej czasu w fazie eksploracji przy umiarkowanej temperaturze -- kluczowe gdy przestrzeń rozwiązań była złożona. Wyjątek stanowiła tai500\_20, gdzie $\alpha = 0.990$ okazał się najlepszy, jednak różnice między wszystkimi konfiguracjami na tej instancji wyniosły poniżej 0.2\% i mieściły się w szumie statystycznym przy $N=5$.
 
-\textbf{Mnożnik $T_0$:} brak jednoznacznego trendu -- optymalna wartość zależy od instancji. Na małych instancjach (tai20\_5, tai20\_10) wyższe wartości ($10\times$) dają lepsze wyniki: przy wolnym chłodzeniu wysoka $T_0$ zapewnia długą fazę eksploracji, a mała przestrzeń pozwala ją w pełni wykorzystać. Na dużych instancjach (tai100\_10, tai100\_20) wartości $1\times$--$5\times$ są optymalne, zaś na tai500\_20 niska wartość ($0.5\times$) z szybszym chłodzeniem działa najlepiej -- zbyt wysoka $T_0$ oznacza trwonienie budżetu na niemal losowe akceptacje zanim algorytm wejdzie w fazę eksploatacji.
+\textbf{Mnożnik $T_0$:} nie zaobserwowano jednoznacznego trendu -- optymalna wartość zależała od instancji. Na małych instancjach (tai20\_5, tai20\_10) wyższe wartości ($10\times$) dawały lepsze wyniki: przy wolnym chłodzeniu wysoka $T_0$ zapewniała długą fazę eksploracji, a mała przestrzeń pozwalała ją w pełni wykorzystać. Na dużych instancjach (tai100\_10, tai100\_20) optymalne okazały się wartości $1\times$--$5\times$, zaś na tai500\_20 niska wartość ($0.5\times$) z szybszym chłodzeniem działała najlepiej -- zbyt wysoka $T_0$ oznaczała trwonienie budżetu na niemal losowe akceptacje zanim algorytm wszedł w fazę eksploatacji.
 
 \textbf{Przyjęte wartości per-instancja:}
 \begin{table}[H]
@@ -344,16 +344,16 @@ tai500\_20 & 500  & 199 & 0.98 & 0.40 & OX+SWAP & 0.990 & 0.5$\times$ \\
 \textbf{Kluczowe obserwacje:}
 \begin{enumerate}
     \item Najważniejszym parametrem okazał się \texttt{pop\_size} -- wpływ na wyniki był największy i jakościowo różny dla małych vs dużych instancji.
-    \item Operatory OX+SWAP dominują na wszystkich instancjach. INVERSION i CX nie wnoszą korzyści dla PFSP.
-    \item \texttt{Px} i \texttt{Pm} wykazują lustrzany wzorzec: na trudnych instancjach oba powinny być wysokie. Krzyżowanie eksploruje przez rekombinację, mutacja utrzymuje różnorodność.
-    \item SA konsekwentnie wygrywa z EA na dużych instancjach, niezależnie od konfiguracji EA. Różnica na tai500\_20 wynosi ok. 2--3\% na korzyść SA.
+    \item Operatory OX+SWAP zdominowały wszystkie instancje. INVERSION i CX nie wniosły korzyści dla PFSP.
+    \item \texttt{Px} i \texttt{Pm} wykazały lustrzany wzorzec: na trudnych instancjach oba powinny być wysokie. Krzyżowanie eksplorowało przez rekombinację, mutacja utrzymywała różnorodność.
+    \item SA konsekwentnie wygrywało z EA na dużych instancjach, niezależnie od konfiguracji EA. Różnica na tai500\_20 wynosiła ok. 2--3\% na korzyść SA.
 \end{enumerate}
 
 \clearpage
 \section{Finalne porównanie algorytmów}
 \label{sec:final}
 
-Porównanie przeprowadzono z najlepszymi konfiguracjami znalezionymi w etapie strojenia. Parametry dla każdej metody zestawiono w tabeli w sekcji~\ref{sec:tuning}. Budżet obliczeniowy: $B = 200\,000$ wywołań funkcji celu. Metody niedeterministyczne (Random, EA, SA) uruchomiono $N = 10$ razy niezależnie; wyniki greedy są deterministyczne (jeden przebieg multi-start). Wszystkie instancje zestawu Taillarda.
+Porównanie przeprowadzono z najlepszymi konfiguracjami znalezionymi w etapie strojenia. Parametry dla każdej metody zestawiono w tabeli w sekcji~\ref{sec:tuning}. Zastosowano budżet obliczeniowy $B = 200\,000$ wywołań funkcji celu. Metody niedeterministyczne (Random, EA, SA) uruchomiono $N = 10$ razy niezależnie; wyniki greedy były deterministyczne (jeden przebieg multi-start). Przetestowano wszystkie instancje zestawu Taillarda.
 
 \begin{table}[H]
 \centering
@@ -402,14 +402,14 @@ Poniżej przedstawiono przebiegi najlepszego uruchomienia algorytmu ewolucyjnego
 
 \subsection{Ranking algorytmów}
 
-Na podstawie wyników finalnego porównania można ustalić następujący ranking skuteczności:
+Na podstawie wyników finalnego porównania ustalono następujący ranking skuteczności:
 
 \textbf{Instancje małe (tai20\_*):}
 \begin{enumerate}
-    \item \textbf{EA} -- wyraźnie najlepszy, bardzo niskie odchylenie standardowe (std=5.7--74.3). Duża populacja (5000) przy małej przestrzeni rozwiązań zapewnia doskonałe pokrycie i stabilność.
+    \item \textbf{EA} -- wyraźnie najlepszy, z bardzo niskim odchyleniem standardowym (std=5.7--74.3). Duża populacja (5000) przy małej przestrzeni rozwiązań zapewniła doskonałe pokrycie i stabilność wyników.
     \item \textbf{SA} -- drugi, gorszy od EA o 1--2\%.
     \item \textbf{Random} -- trzeci, zbliżony do greedy.
-    \item \textbf{Greedy} -- najgorszy na tai20\_10 i tai20\_20 (24611 vs EA 20911 -- różnica 17\%!). Greedy pada ofiarą minimów lokalnych już na etapie konstrukcji.
+    \item \textbf{Greedy} -- najgorszy na tai20\_10 i tai20\_20 (24611 vs EA 20911 -- różnica 17\%!). Greedy padał ofiarą minimów lokalnych już na etapie konstrukcji.
 \end{enumerate}
 
 \textbf{Instancje średnie i trudne (tai100\_*, tai500\_20):}
@@ -422,14 +422,14 @@ Na podstawie wyników finalnego porównania można ustalić następujący rankin
 
 \subsection{Kluczowe obserwacje}
 
-\textbf{EA dominuje nad SA na wszystkich dostępnych instancjach} po strojeniu -- jest to odwrócenie wyniku sprzed strojenia, gdzie SA wygrywało na dużych instancjach. Strojenie parametrów EA (zwłaszcza per-instancja pop\_size, Px i Pm) miało decydujący wpływ na jakość wyników.
+\textbf{EA zdominowało SA na wszystkich dostępnych instancjach} po strojeniu -- stanowiło to odwrócenie wyniku sprzed strojenia, gdzie SA wygrywało na dużych instancjach. Strojenie parametrów EA (zwłaszcza per-instancja pop\_size, Px i Pm) miało decydujący wpływ na jakość wyników.
 
-\textbf{Greedy jest najgorszą metodą} mimo że jest deterministyczny i szybki. Jego budżet ewaluacji jest znacznie mniejszy niż $B$ (np. 3820 ewaluacji dla tai20 vs 200k dla pozostałych), co utrudnia bezpośrednie porównanie. Dla uczciwego porównania należałoby przyznać greedy taki sam budżet przez powtarzanie z różnymi punktami startowymi, jednak jego wyniki i tak nie dorównują metaheurystykom.
+\textbf{Greedy okazało się najgorszą metodą} mimo że jest deterministyczne i szybkie. Jego budżet ewaluacji był znacznie mniejszy niż $B$ (np. 3820 ewaluacji dla tai20 vs 200k dla pozostałych), co utrudniało bezpośrednie porównanie. Nawet przy równym budżecie wyniki greedy nie dorównałyby metaheurystykom.
 
-\textbf{Random jest zaskakująco dobry} jako punkt odniesienia -- na instancjach tai20 osiąga wyniki zbliżone do greedy, a na tai100 jest lepszy niż greedy. Wynika to z bardzo dużej liczby ewaluacji ($B = 200\,000$) -- random sampling przy takim budżecie pokrywa przestrzeń lepiej niż deterministyczna heurystyka z małą liczbą restartów.
+\textbf{Random okazało się zaskakująco dobrym} punktem odniesienia -- na instancjach tai20 osiągnęło wyniki zbliżone do greedy, a na tai100 było lepsze niż greedy. Wynikało to z bardzo dużej liczby ewaluacji ($B = 200\,000$) -- losowe próbkowanie przy takim budżecie pokrywało przestrzeń lepiej niż deterministyczna heurystyka z małą liczbą restartów.
 
-\textbf{EA jest wyraźnie bardziej stabilny niż SA} -- odchylenie standardowe EA jest konsekwentnie niższe (np. tai20\_5: std=5.7 EA vs 102.6 SA). Duża populacja i mechanizm elitaryzmu (zawsze zachowywane najlepsze rozwiązanie) zapewniają powtarzalność wyników.
+\textbf{EA okazało się wyraźnie bardziej stabilne niż SA} -- odchylenie standardowe EA było konsekwentnie niższe (np. tai20\_5: std=5.7 EA vs 102.6 SA). Duża populacja i mechanizm elitaryzmu (zawsze zachowywane najlepsze rozwiązanie) zapewniały powtarzalność wyników.
 
-\textbf{Strojenie per-instancja przyniosło znaczące korzyści.} Porównując wyniki bazowe EA (pop=100, avg tai100\_10=317724) z wynikami po strojeniu (pop=500, avg tai100\_10=309691) obserwujemy poprawę o 2.5\%. Dla SA poprawa jest mniejsza, co sugeruje że SA jest mniej wrażliwy na dobór parametrów przy odpowiednim budżecie obliczeniowym.
+\textbf{Strojenie per-instancja przyniosło znaczące korzyści.} Porównując wyniki bazowe EA (pop=100, avg tai100\_10=317724) z wynikami po strojeniu (pop=500, avg tai100\_10=309691) zaobserwowano poprawę o 2.5\%. Dla SA poprawa była mniejsza, co sugerowało że SA jest mniej wrażliwe na dobór parametrów przy odpowiednim budżecie obliczeniowym.
 
 \end{document}
