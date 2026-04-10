@@ -40,6 +40,8 @@ SummaryStats SA::runMultiple(int n_runs) {
 }
 
 Solution SA::run() {
+  history.clear();
+
   std::mt19937 gen(std::random_device{}());
   std::uniform_real_distribution<double> prob(0.0, 1.0);
 

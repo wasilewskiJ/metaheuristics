@@ -52,7 +52,8 @@ int main() {
       float  px  = cfg.px;
       float  pm  = cfg.pm;
       int    gen = (BUDGET - pop) / pop;
-      double t0  = SA::estimate_initial_temp(instance) * cfg.sa_t0_mult;
+      double t0         = SA::estimate_initial_temp(instance) * cfg.sa_t0_mult;
+      int    sa_log_int = std::max(1, BUDGET / 500);
 
       // --- Random (N_RUNS x BUDGET evals) ---
       {
@@ -92,7 +93,7 @@ int main() {
 
       // --- SA (N_RUNS x BUDGET evals) ---
       {
-        SA sa(instance, t0, cfg.sa_cooling, BUDGET);
+        SA sa(instance, t0, cfg.sa_cooling, BUDGET, sa_log_int);
         instance.reset_eval_counter();
         SummaryStats s = sa.runMultiple(N_RUNS);
         assert(instance.get_eval_counter() == N_RUNS * (BUDGET + 1));

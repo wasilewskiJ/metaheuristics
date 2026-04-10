@@ -349,4 +349,87 @@ tai500\_20 & 500  & 199 & 0.98 & 0.40 & OX+SWAP & 0.990 & 0.5$\times$ \\
     \item SA konsekwentnie wygrywa z EA na dużych instancjach, niezależnie od konfiguracji EA. Różnica na tai500\_20 wynosi ok. 2--3\% na korzyść SA.
 \end{enumerate}
 
+\clearpage
+\section{Finalne porównanie algorytmów}
+\label{sec:final}
+
+Porównanie przeprowadzono z najlepszymi konfiguracjami znalezionymi w etapie strojenia. Parametry dla każdej metody zestawiono w tabeli w sekcji~\ref{sec:tuning}. Budżet obliczeniowy: $B = 200\,000$ wywołań funkcji celu. Metody niedeterministyczne (Random, EA, SA) uruchomiono $N = 10$ razy niezależnie; wyniki greedy są deterministyczne (jeden przebieg multi-start). Wszystkie instancje zestawu Taillarda.
+
+\begin{table}[H]
+\centering
+\caption{Finalne porównanie -- wyniki z 10 uruchomień ($B = 200\,000$)}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrrrrr}
+\toprule
+ & \multicolumn{2}{c}{Random} & \multicolumn{1}{c}{Greedy} & \multicolumn{3}{c}{EA} & \multicolumn{3}{c}{SA} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-4} \cmidrule(lr){5-7} \cmidrule(lr){8-10}
+Instancja & best & avg & best & best & avg & std & best & avg & std \\
+\midrule
+tai20\_5   & 14875 & 15038.3 & 15403 & \textbf{14041} & \textbf{14042.9} & 5.7   & 14104 & 14261.3 & 102.6 \\
+tai20\_10  & 21999 & 22563.6 & 24611 & \textbf{20911} & \textbf{20952.9} & 15.2  & 21186 & 21360.6 & 121.5 \\
+tai20\_20  & 35323 & 35601.2 & 35103 & \textbf{33623} & \textbf{33764.0} & 74.3  & 33972 & 34236.9 & 164.3 \\
+tai100\_10 & 355783 & 357195.5 & 373462 & \textbf{307448} & \textbf{309690.9} & 1329.3 & 309629 & 311767.5 & 1369.3 \\
+tai100\_20 & 430692 & 433701.8 & 440486 & \textbf{377492} & \textbf{382019.0} & 2431.3 & 381329 & 385474.7 & 2729.2 \\
+tai500\_20 & 7840996 & 7879792.0 & 8407645 & 7040703 & 7075627.6 & 34421.2 & -- & -- & -- \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{Wykresy przebiegu EA}
+
+Poniżej przedstawiono przebiegi najlepszego uruchomienia algorytmu ewolucyjnego (best, avg, worst populacji w każdej generacji) dla trzech wybranych instancji.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{tai20_5_0_EA.png}
+    \caption{Przebieg EA dla instancji łatwej (tai20\_5, pop=5000, gen=39)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{tai100_10_0_EA.png}
+    \caption{Przebieg EA dla instancji średniej (tai100\_10, pop=500, gen=399)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{tai500_20_0_EA.png}
+    \caption{Przebieg EA dla instancji trudnej (tai500\_20, pop=500, gen=399)}
+\end{figure}
+
+\section{Analiza wyników i wnioski}
+\label{sec:conclusions}
+
+\subsection{Ranking algorytmów}
+
+Na podstawie wyników finalnego porównania można ustalić następujący ranking skuteczności:
+
+\textbf{Instancje małe (tai20\_*):}
+\begin{enumerate}
+    \item \textbf{EA} -- wyraźnie najlepszy, bardzo niskie odchylenie standardowe (std=5.7--74.3). Duża populacja (5000) przy małej przestrzeni rozwiązań zapewnia doskonałe pokrycie i stabilność.
+    \item \textbf{SA} -- drugi, gorszy od EA o 1--2\%.
+    \item \textbf{Random} -- trzeci, zbliżony do greedy.
+    \item \textbf{Greedy} -- najgorszy na tai20\_10 i tai20\_20 (24611 vs EA 20911 -- różnica 17\%!). Greedy pada ofiarą minimów lokalnych już na etapie konstrukcji.
+\end{enumerate}
+
+\textbf{Instancje średnie i trudne (tai100\_*, tai500\_20):}
+\begin{enumerate}
+    \item \textbf{EA} -- nieznacznie lepszy od SA pod względem avg (tai100\_10: 309691 vs 311768, tai100\_20: 382019 vs 385475).
+    \item \textbf{SA} -- zbliżony do EA.
+    \item \textbf{Random} -- znacznie gorszy (tai100\_10: avg 357196 vs EA 309691, różnica 15\%).
+    \item \textbf{Greedy} -- najgorszy (tai100\_10: 373462 vs EA 307448, różnica 21\%).
+\end{enumerate}
+
+\subsection{Kluczowe obserwacje}
+
+\textbf{EA dominuje nad SA na wszystkich dostępnych instancjach} po strojeniu -- jest to odwrócenie wyniku sprzed strojenia, gdzie SA wygrywało na dużych instancjach. Strojenie parametrów EA (zwłaszcza per-instancja pop\_size, Px i Pm) miało decydujący wpływ na jakość wyników.
+
+\textbf{Greedy jest najgorszą metodą} mimo że jest deterministyczny i szybki. Jego budżet ewaluacji jest znacznie mniejszy niż $B$ (np. 3820 ewaluacji dla tai20 vs 200k dla pozostałych), co utrudnia bezpośrednie porównanie. Dla uczciwego porównania należałoby przyznać greedy taki sam budżet przez powtarzanie z różnymi punktami startowymi, jednak jego wyniki i tak nie dorównują metaheurystykom.
+
+\textbf{Random jest zaskakująco dobry} jako punkt odniesienia -- na instancjach tai20 osiąga wyniki zbliżone do greedy, a na tai100 jest lepszy niż greedy. Wynika to z bardzo dużej liczby ewaluacji ($B = 200\,000$) -- random sampling przy takim budżecie pokrywa przestrzeń lepiej niż deterministyczna heurystyka z małą liczbą restartów.
+
+\textbf{EA jest wyraźnie bardziej stabilny niż SA} -- odchylenie standardowe EA jest konsekwentnie niższe (np. tai20\_5: std=5.7 EA vs 102.6 SA). Duża populacja i mechanizm elitaryzmu (zawsze zachowywane najlepsze rozwiązanie) zapewniają powtarzalność wyników.
+
+\textbf{Strojenie per-instancja przyniosło znaczące korzyści.} Porównując wyniki bazowe EA (pop=100, avg tai100\_10=317724) z wynikami po strojeniu (pop=500, avg tai100\_10=309691) obserwujemy poprawę o 2.5\%. Dla SA poprawa jest mniejsza, co sugeruje że SA jest mniej wrażliwy na dobór parametrów przy odpowiednim budżecie obliczeniowym.
+
 \end{document}
