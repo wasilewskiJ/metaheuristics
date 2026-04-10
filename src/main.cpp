@@ -20,13 +20,17 @@ static const InitType      EA_INIT  = InitType::RANDOM;
 static const double SA_TEMP    = -1.0;  // -1 = auto-estimate from instance
 static const double SA_COOLING = 0.995;
 
-static const std::vector<std::string> TEST_CASES = {
-    "../test_cases/tai20_5_0.fsp",
-    "../test_cases/tai20_10_0.fsp",
-    "../test_cases/tai20_20_0.fsp",
-    "../test_cases/tai100_10_0.fsp",
-    "../test_cases/tai100_20_0.fsp",
-    "../test_cases/tai500_20_0.fsp",
+struct InstanceConfig {
+  int pop_size;
+};
+
+static const std::vector<std::pair<std::string, InstanceConfig>> TEST_CASES = {
+    {"../test_cases/tai20_5_0.fsp",   {5000}},
+    {"../test_cases/tai20_10_0.fsp",  {5000}},
+    {"../test_cases/tai20_20_0.fsp",  {5000}},
+    {"../test_cases/tai100_10_0.fsp", {500}},
+    {"../test_cases/tai100_20_0.fsp", {500}},
+    {"../test_cases/tai500_20_0.fsp", {500}},
 };
 
 void print_stats(const std::string& label, const SummaryStats& s) {
@@ -38,23 +42,25 @@ void print_stats(const std::string& label, const SummaryStats& s) {
 }
 
 int main() {
-  for (const auto& path : TEST_CASES) {
+  for (const auto& [path, cfg] : TEST_CASES) {
     try {
       std::cout << "\n=== " << path << " ===\n";
       PfspInstance instance(path);
       std::string base = path.substr(path.rfind('/') + 1);
       base = base.substr(0, base.rfind('.'));
 
-      // --- Tune EA pop_size (gen adjusted to keep BUDGET fixed) ---
-      std::cout << "-- EA pop_size --\n";
-      for (int pop : {100, 200, 500, 1000, 5000, 10000}) {
-        int gen = (BUDGET - pop) / pop;
+      int pop = cfg.pop_size;
+      int gen = (BUDGET - pop) / pop;
+
+      // --- Tune EA Px ---
+      std::cout << "-- EA Px --\n";
+      for (float px : {0.5f, 0.7f, 0.9f, 0.95f, 0.98f}) {
         instance.reset_eval_counter();
-        EA ea(instance, pop, gen, EA_PX, EA_PM, EA_TOUR, EA_CROSS, EA_MUT, EA_INIT);
+        EA ea(instance, pop, gen, px, EA_PM, EA_TOUR, EA_CROSS, EA_MUT, EA_INIT);
         SummaryStats s = ea.runMultiple(N_RUNS);
         assert(instance.get_eval_counter() == N_RUNS * BUDGET);
-        print_stats("pop=" + std::to_string(pop) + " gen=" + std::to_string(gen), s);
-        Logger(ea.getBestRunHistory(), base + "_EA_pop" + std::to_string(pop) + ".csv").dumpToFile();
+        print_stats("Px=" + std::to_string(px), s);
+        Logger(ea.getBestRunHistory(), base + "_EA_Px" + std::to_string(px) + ".csv").dumpToFile();
       }
 
       // --- SA for reference ---
