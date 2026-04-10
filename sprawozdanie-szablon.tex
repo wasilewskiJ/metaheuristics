@@ -25,10 +25,10 @@
 \section{Sformułowanie zadania}
 Celem zadania była implementacja i przebadanie metaheurystyki Algorytmu Ewolucyjnego (EA) dla permutacyjnego problemu przepływowego (PFSP -- \textit{Permutation Flow Shop Problem}) oraz porównanie jej z metodami nieewolucyjnymi: algorytmem zachłannym (greedy), symulowanym wyżarzaniem (SA) i losowym przeszukiwaniem.
 
-W PFSP rozpatrywano $n$ zadań i $m$ maszyn. Każde zadanie musiało być wykonane na każdej maszynie w tej samej ustalonej kolejności (maszyna 1 $\rightarrow$ 2 $\rightarrow \ldots \rightarrow$ m). Czas przetwarzania zadania $j$ na maszynie $i$ wynosił $p_{ij}$. Poszukiwano permutacji zadań minimalizującej \textbf{makespan} -- czas zakończenia ostatniego zadania na ostatniej maszynie ($C_{\max}$).
+W PFSP rozpatrywano $n$ zadań i $m$ maszyn. Każde zadanie musiało być wykonane na każdej maszynie w tej samej ustalonej kolejności (maszyna 1 $\rightarrow$ 2 $\rightarrow \ldots \rightarrow$ m). Czas przetwarzania zadania $j$ na maszynie $i$ wynosił $p_{ij}$. Poszukiwano permutacji zadań minimalizującej \textbf{sumę czasów ukończenia wszystkich zadań na ostatniej maszynie} ($\sum_{j=1}^{J} c(x_j, M)$, tzw.\ \emph{total completion time}). Nie jest to makespan ($C_{\max}$, czyli czas zakończenia wyłącznie ostatniego zadania), lecz suma wartości $c(x_j, M)$ dla każdego zadania $j$ w kolejności permutacji.
 
 \section{Sposób rozwiązywania zadania}
-Rozwiązania były kodowane jako permutacje $n$ zadań. Ocena rozwiązania polegała na obliczeniu makespanu poprzez symulację harmonogramu: dla każdej maszyny i każdego zadania (w kolejności permutacji) czas zakończenia wyznaczany był jako maksimum czasu zwolnienia maszyny i czasu zakończenia poprzedniego zadania na tej samej maszynie, powiększony o czas przetwarzania. Wszystkie metaheurystyki operowały bezpośrednio na permutacjach.
+Rozwiązania były kodowane jako permutacje $n$ zadań. Ocena rozwiązania polegała na obliczeniu sumy czasów ukończenia wszystkich zadań na ostatniej maszynie ($\sum C_j$) poprzez symulację harmonogramu: dla każdej maszyny i każdego zadania (w kolejności permutacji) czas zakończenia wyznaczany był jako maksimum czasu zwolnienia maszyny i czasu zakończenia poprzedniego zadania na tej samej maszynie, powiększony o czas przetwarzania. Na końcu sumowane były czasy ukończenia na ostatniej maszynie dla wszystkich zadań. Wszystkie metaheurystyki operowały bezpośrednio na permutacjach.
 
 \section{Metody użyte do rozwiązania zadania}
 \begin{itemize}
@@ -44,7 +44,7 @@ Rozwiązania były kodowane jako permutacje $n$ zadań. Ocena rozwiązania poleg
 \label{sec:random}
 \begin{itemize}
     \item Zastosowano proste losowe przeszukiwanie przestrzeni rozwiązań.
-    \item W każdej iteracji generowana była losowa permutacja $n$ zadań i obliczany jej makespan.
+    \item W każdej iteracji generowana była losowa permutacja $n$ zadań i obliczana jej wartość funkcji celu ($\sum C_j$).
     \item \textbf{Parametry:} liczba iteracji = budżet $B$.
     \item \textbf{Log:} co iterację zapisywany był bieżący koszt; Logger śledził best/avg/worst w czasie.
 \end{itemize}
@@ -53,7 +53,7 @@ Rozwiązania były kodowane jako permutacje $n$ zadań. Ocena rozwiązania poleg
 \label{sec:greedy}
 \begin{itemize}
     \item Zaimplementowano wielostartowy algorytm konstrukcyjny.
-    \item Dla każdego punktu startowego (zadania) budowana była permutacja -- w każdym kroku kolejne zadanie wstawiano na pozycję minimalizującą bieżący makespan (podejście NEH-like).
+    \item Dla każdego punktu startowego (zadania) budowana była permutacja -- w każdym kroku kolejne zadanie wstawiano na pozycję minimalizującą bieżącą wartość $\sum C_j$.
     \item \textbf{Multi-start:} przeprowadzano uruchomienia dla różnych zadań startowych; zwracane było najlepsze znalezione rozwiązanie.
     \item \textbf{Parametry:} liczba restartów (domyślnie = liczba zadań).
 \end{itemize}
@@ -370,7 +370,7 @@ tai20\_10  & 21999 & 22563.6 & 24611 & \textbf{20911} & \textbf{20952.9} & 15.2 
 tai20\_20  & 35323 & 35601.2 & 35103 & \textbf{33623} & \textbf{33764.0} & 74.3  & 33972 & 34236.9 & 164.3 \\
 tai100\_10 & 355783 & 357195.5 & 373462 & \textbf{307448} & \textbf{309690.9} & 1329.3 & 309629 & 311767.5 & 1369.3 \\
 tai100\_20 & 430692 & 433701.8 & 440486 & \textbf{377492} & \textbf{382019.0} & 2431.3 & 381329 & 385474.7 & 2729.2 \\
-tai500\_20 & 7840996 & 7879792.0 & 8407645 & 7040703 & 7075627.6 & 34421.2 & -- & -- & -- \\
+tai500\_20 & 7855501 & 7877822.6 & 8407645 & 7062801 & 7093089.4 & 24356.3 & \textbf{6942475} & \textbf{6977049.1} & 18033.4 \\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -412,7 +412,7 @@ Na podstawie wyników finalnego porównania ustalono następujący ranking skute
     \item \textbf{Greedy} -- najgorszy na tai20\_10 i tai20\_20 (24611 vs EA 20911 -- różnica 17\%!). Greedy padał ofiarą minimów lokalnych już na etapie konstrukcji.
 \end{enumerate}
 
-\textbf{Instancje średnie i trudne (tai100\_*, tai500\_20):}
+\textbf{Instancje średnie (tai100\_*):}
 \begin{enumerate}
     \item \textbf{EA} -- nieznacznie lepszy od SA pod względem avg (tai100\_10: 309691 vs 311768, tai100\_20: 382019 vs 385475).
     \item \textbf{SA} -- zbliżony do EA.
@@ -420,11 +420,19 @@ Na podstawie wyników finalnego porównania ustalono następujący ranking skute
     \item \textbf{Greedy} -- najgorszy (tai100\_10: 373462 vs EA 307448, różnica 21\%).
 \end{enumerate}
 
+\textbf{Instancja trudna (tai500\_20):}
+\begin{enumerate}
+    \item \textbf{SA} -- najlepszy, avg=6977049, wyraźnie lepszy od EA o ok. 1.6\%.
+    \item \textbf{EA} -- drugi, avg=7093089.
+    \item \textbf{Random} -- znacznie gorszy, avg=7877823 (różnica ok. 12\% względem SA).
+    \item \textbf{Greedy} -- najgorszy, best=8407645 (gorszy od SA o ponad 20\%).
+\end{enumerate}
+
 \subsection{Kluczowe obserwacje}
 
-\textbf{EA zdominowało SA na wszystkich dostępnych instancjach} po strojeniu -- stanowiło to odwrócenie wyniku sprzed strojenia, gdzie SA wygrywało na dużych instancjach. Strojenie parametrów EA (zwłaszcza per-instancja pop\_size, Px i Pm) miało decydujący wpływ na jakość wyników.
+\textbf{EA wygrało na małych i średnich instancjach, SA na największej.} Na tai20\_* i tai100\_* EA po strojeniu okazało się lepsze od SA. Jednak na tai500\_20 SA wróciło na prowadzenie -- wynik spójny z obserwacjami sprzed strojenia i potwierdzający, że przy bardzo dużej przestrzeni poszukiwań lokalne przeszukiwanie SA skaluje się lepiej niż ewolucja na populacji. Strojenie parametrów EA (zwłaszcza per-instancja pop\_size, Px i Pm) miało decydujący wpływ na jakość wyników na pozostałych instancjach.
 
-\textbf{Greedy okazało się najgorszą metodą} mimo że jest deterministyczne i szybkie. Jego budżet ewaluacji był znacznie mniejszy niż $B$ (np. 3820 ewaluacji dla tai20 vs 200k dla pozostałych), co utrudniało bezpośrednie porównanie. Nawet przy równym budżecie wyniki greedy nie dorównałyby metaheurystykom.
+\textbf{Greedy okazało się najgorszą metodą} mimo że jest deterministyczne i szybkie. Ograniczenie budżetowe przy greedy (mała liczba restartów), sprawia, że algorytm ten jest nieskuteczny.
 
 \textbf{Random okazało się zaskakująco dobrym} punktem odniesienia -- na instancjach tai20 osiągnęło wyniki zbliżone do greedy, a na tai100 było lepsze niż greedy. Wynikało to z bardzo dużej liczby ewaluacji ($B = 200\,000$) -- losowe próbkowanie przy takim budżecie pokrywało przestrzeń lepiej niż deterministyczna heurystyka z małą liczbą restartów.
 
