@@ -7,8 +7,8 @@
 #include <iomanip>
 #include <iostream>
 
-static const int N_RUNS = 5;
-static const int BUDGET = 100000;
+static const int N_RUNS = 10;
+static const int BUDGET = 200000;
 
 static const int    EA_TOUR = 5;
 static const CrossoverType EA_CROSS = CrossoverType::OX;
@@ -34,7 +34,7 @@ static const std::vector<std::pair<std::string, InstanceConfig>> TEST_CASES = {
 
 void print_stats(const std::string& label, const SummaryStats& s) {
   std::cout << std::fixed << std::setprecision(1);
-  std::cout << "  " << std::left << std::setw(20) << label
+  std::cout << "  " << std::left << std::setw(10) << label
             << " best=" << std::setw(8) << s.best
             << " avg="  << std::setw(10) << s.avg
             << " std="  << s.std_dev << "\n";
@@ -54,23 +54,51 @@ int main() {
       int    gen = (BUDGET - pop) / pop;
       double t0  = SA::estimate_initial_temp(instance) * cfg.sa_t0_mult;
 
-      // --- EA ---
-      std::cout << "-- EA --\n";
-      instance.reset_eval_counter();
-      EA ea(instance, pop, gen, px, pm, EA_TOUR, EA_CROSS, EA_MUT, EA_INIT);
-      SummaryStats ea_s = ea.runMultiple(N_RUNS);
-      assert(instance.get_eval_counter() == N_RUNS * BUDGET);
-      print_stats("EA", ea_s);
-      Logger(ea.getBestRunHistory(), base + "_EA.csv").dumpToFile();
+      // --- Random (N_RUNS x BUDGET evals) ---
+      {
+        std::vector<int> best_per_run;
+        for (int i = 0; i < N_RUNS; i++) {
+          instance.reset_eval_counter();
+          auto result = instance.runRandomAlg(BUDGET);
+          assert(instance.get_eval_counter() == BUDGET);
+          best_per_run.push_back(compute_stats(result).best);
+          if (i == 0)
+            Logger(result, base + "_randomAlg.csv").dumpToFile();
+        }
+        print_stats("RANDOM", compute_multirun_stats(best_per_run));
+      }
 
-      // --- SA ---
-      std::cout << "-- SA --\n";
-      SA sa(instance, t0, cfg.sa_cooling, BUDGET);
-      instance.reset_eval_counter();
-      SummaryStats sa_s = sa.runMultiple(N_RUNS);
-      assert(instance.get_eval_counter() == N_RUNS * (BUDGET + 1));
-      print_stats("SA", sa_s);
-      Logger(sa.getBestRunHistory(), base + "_SA.csv").dumpToFile();
+      // --- Greedy (single multi-start run, budget = num_jobs) ---
+      {
+        instance.reset_eval_counter();
+        auto result = instance.runGreedyAlg();
+        SummaryStats s = compute_stats(result);
+        Logger(result, base + "_greedyAlg.csv").dumpToFile();
+        std::cout << std::fixed << std::setprecision(1);
+        std::cout << "  " << std::left << std::setw(10) << "GREEDY"
+                  << " best=" << std::setw(8) << s.best
+                  << " evals=" << instance.get_eval_counter() << "\n";
+      }
+
+      // --- EA (N_RUNS x BUDGET evals) ---
+      {
+        instance.reset_eval_counter();
+        EA ea(instance, pop, gen, px, pm, EA_TOUR, EA_CROSS, EA_MUT, EA_INIT);
+        SummaryStats s = ea.runMultiple(N_RUNS);
+        assert(instance.get_eval_counter() == N_RUNS * BUDGET);
+        print_stats("EA", s);
+        Logger(ea.getBestRunHistory(), base + "_EA.csv").dumpToFile();
+      }
+
+      // --- SA (N_RUNS x BUDGET evals) ---
+      {
+        SA sa(instance, t0, cfg.sa_cooling, BUDGET);
+        instance.reset_eval_counter();
+        SummaryStats s = sa.runMultiple(N_RUNS);
+        assert(instance.get_eval_counter() == N_RUNS * (BUDGET + 1));
+        print_stats("SA", s);
+        Logger(sa.getBestRunHistory(), base + "_SA.csv").dumpToFile();
+      }
 
     } catch (const std::exception& e) {
       std::cerr << "ERROR: " << e.what() << '\n';
