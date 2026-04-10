@@ -1,0 +1,74 @@
+
+metaheuristics/src on  tuning [?⇡]
+❯ g++ -std=c++17 -O3 -march=native -o metaheuristics *cpp
+
+metaheuristics/src on  tuning [?⇡] took 4s
+❯ ./metaheuristics
+
+=== ../test_cases/tai20_5_0.fsp ===
+-- EA operators --
+  OX+SWAP              best=14041    avg=14050.2    std=9.8
+  OX+INV               best=14041    avg=14050.4    std=11.9
+  PMX+SWAP             best=14062    avg=14095.6    std=18.8
+  PMX+INV              best=14103    avg=14114.2    std=11.0
+  CX+SWAP              best=14188    avg=14250.8    std=49.3
+  CX+INV               best=14165    avg=14199.8    std=27.4
+-- SA --
+  SA                   best=14286    avg=14394.2    std=59.9
+
+=== ../test_cases/tai20_10_0.fsp ===
+-- EA operators --
+  OX+SWAP              best=20911    avg=20976.0    std=35.5
+  OX+INV               best=20955    avg=20985.2    std=23.0
+  PMX+SWAP             best=21000    avg=21155.2    std=99.9
+  PMX+INV              best=21044    avg=21122.0    std=49.0
+  CX+SWAP              best=21286    avg=21391.8    std=90.3
+  CX+INV               best=21272    avg=21432.2    std=132.3
+-- SA --
+  SA                   best=21243    avg=21665.4    std=358.0
+
+=== ../test_cases/tai20_20_0.fsp ===
+-- EA operators --
+  OX+SWAP              best=33767    avg=33804.2    std=26.2
+  OX+INV               best=33781    avg=33839.2    std=42.5
+  PMX+SWAP             best=33923    avg=34011.8    std=61.4
+  PMX+INV              best=33871    avg=34031.4    std=98.6
+  CX+SWAP              best=34031    avg=34253.4    std=134.0
+  CX+INV               best=34124    avg=34289.2    std=120.8
+-- SA --
+  SA                   best=34085    avg=34368.8    std=189.5
+
+=== ../test_cases/tai100_10_0.fsp ===
+-- EA operators --
+  OX+SWAP              best=313846   avg=314975.8   std=1157.8
+  OX+INV               best=317237   avg=320987.6   std=3359.8
+  PMX+SWAP             best=315068   avg=316062.8   std=940.3
+  PMX+INV              best=319976   avg=323640.0   std=4133.2
+  CX+SWAP              best=315849   avg=318466.2   std=1404.3
+  CX+INV               best=324594   avg=326986.8   std=1905.6
+-- SA --
+  SA                   best=311284   avg=312832.6   std=1732.4
+
+=== ../test_cases/tai100_20_0.fsp ===
+-- EA operators --
+  OX+SWAP              best=387889   avg=388839.2   std=796.2
+  OX+INV               best=392415   avg=394008.2   std=1170.1
+  PMX+SWAP             best=385839   avg=390552.4   std=2773.1
+  PMX+INV              best=396841   avg=399469.2   std=3634.5
+  CX+SWAP              best=389366   avg=392366.4   std=1704.6
+  CX+INV               best=404057   avg=405567.4   std=901.9
+-- SA --
+  SA                   best=380551   avg=385571.2   std=4179.9
+
+=== ../test_cases/tai500_20_0.fsp ===
+-- EA operators --
+  OX+SWAP              best=7252502  avg=7269054.0  std=16837.7
+  OX+INV               best=7332645  avg=7396330.8  std=47200.2
+  PMX+SWAP             best=7269300  avg=7295316.0  std=21393.7
+  PMX+INV              best=7415306  avg=7475299.8  std=46419.9
+  CX+SWAP              best=7343212  avg=7373814.0  std=24768.5
+  CX+INV               best=7477663  avg=7536259.4  std=33031.9
+-- SA --
+  SA                   best=6995336  avg=7010919.4  std=16067.0
+
+

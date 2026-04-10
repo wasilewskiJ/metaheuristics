@@ -639,4 +639,37 @@ Dla wartości \texttt{pop\_size} $\geq$ 5000 na instancjach tai100/tai500 wyniki
     \item Instancje od tai100\_10 wzwyż: \texttt{pop\_size = 500}
 \end{itemize}
 
+\subsection{Strojenie operatorów genetycznych}
+
+Przetestowano wszystkie kombinacje trzech operatorów krzyżowania (OX, PMX, CX) i dwóch operatorów mutacji (SWAP, INVERSION) -- łącznie 6 konfiguracji. Pozostałe parametry utrzymano na wartościach ustalonych wcześniej, budżet $B = 100\,000$.
+
+\begin{table}[H]
+\centering
+\caption{Wyniki kombinacji operatorów -- avg z 5 uruchomień}
+\begin{tabular}{lrrrrrr}
+\toprule
+Operatory & tai20\_5 & tai20\_10 & tai20\_20 & tai100\_10 & tai100\_20 & tai500\_20 \\
+\midrule
+\textbf{OX+SWAP}   & \textbf{14050} & \textbf{20976} & \textbf{33804} & \textbf{314976} & \textbf{388839} & \textbf{7269054} \\
+OX+INV    & 14050 & 20985 & 33839 & 320988 & 394008 & 7396331 \\
+PMX+SWAP  & 14096 & 21155 & 34012 & 316063 & 390552 & 7295316 \\
+PMX+INV   & 14114 & 21122 & 34031 & 323640 & 399469 & 7475300 \\
+CX+SWAP   & 14251 & 21392 & 34253 & 318466 & 392366 & 7373814 \\
+CX+INV    & 14200 & 21432 & 34289 & 326987 & 405567 & 7536259 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Wnioski}
+
+\textbf{OX+SWAP wygrywa we wszystkich sześciu instancjach.}
+
+\textbf{SWAP bije INVERSION niezależnie od operatora krzyżowania.} Wynik ten jest nieoczywisty -- inversion wykonuje większą zmianę w permutacji (odwraca segment), co intuicyjnie sugeruje lepszą eksplorację. Jednak w PFSP liczy się \emph{względna kolejność} zadań, nie ich bezwzględne pozycje. Inversion odwraca starannie zbudowane przez krzyżowanie względne kolejności, de facto niszcząc informację genetyczną z poprzedniego pokolenia. SWAP zamienia tylko dwa elementy, pozostawiając resztę struktury nienaruszoną -- co jest wystarczającą perturbacją, by uciec z lokalnego minimum, bez destrukcji całego chromosomu.
+
+\textbf{CX wypada najgorzej.} Cycle Crossover jest zaprojektowany do zachowania bezwzględnych pozycji genów, co jest przydatne np. w problemie przypisania. W PFSP pozycja absolutna nie ma znaczenia -- liczy się kolejność wykonania zadań. CX traci zatem główną zaletę, za którą jest ceniony, i degeneruje się do mało efektywnej rekombinacji.
+
+\textbf{PMX plasuje się pośrodku.} Częściowe mapowanie pozycji daje lepsze wyniki niż CX, ale gorsze niż OX. OX zachowuje ciągłe bloki względnej kolejności z pierwszego rodzica i uzupełnia brakujące elementy w kolejności z drugiego -- co dobrze odpowiada strukturze dobrego uszeregowania w PFSP.
+
+\textbf{Przyjęta konfiguracja:} \texttt{crossover = OX}, \texttt{mutation = SWAP}.
+
 \end{document}
