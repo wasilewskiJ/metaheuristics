@@ -21,16 +21,17 @@ static const double SA_TEMP    = -1.0;  // -1 = auto-estimate from instance
 static const double SA_COOLING = 0.995;
 
 struct InstanceConfig {
-  int pop_size;
+  int   pop_size;
+  float px;
 };
 
 static const std::vector<std::pair<std::string, InstanceConfig>> TEST_CASES = {
-    {"../test_cases/tai20_5_0.fsp",   {5000}},
-    {"../test_cases/tai20_10_0.fsp",  {5000}},
-    {"../test_cases/tai20_20_0.fsp",  {5000}},
-    {"../test_cases/tai100_10_0.fsp", {500}},
-    {"../test_cases/tai100_20_0.fsp", {500}},
-    {"../test_cases/tai500_20_0.fsp", {500}},
+    {"../test_cases/tai20_5_0.fsp",   {5000, 0.90f}},
+    {"../test_cases/tai20_10_0.fsp",  {5000, 0.90f}},
+    {"../test_cases/tai20_20_0.fsp",  {5000, 0.70f}},
+    {"../test_cases/tai100_10_0.fsp", {500,  0.90f}},
+    {"../test_cases/tai100_20_0.fsp", {500,  0.95f}},
+    {"../test_cases/tai500_20_0.fsp", {500,  0.98f}},
 };
 
 void print_stats(const std::string& label, const SummaryStats& s) {
@@ -49,8 +50,9 @@ int main() {
       std::string base = path.substr(path.rfind('/') + 1);
       base = base.substr(0, base.rfind('.'));
 
-      int pop = cfg.pop_size;
-      int gen = (BUDGET - pop) / pop;
+      int   pop = cfg.pop_size;
+      float px  = cfg.px;
+      int   gen = (BUDGET - pop) / pop;
 
       // --- Tune EA operator combinations ---
       std::cout << "-- EA operators --\n";
@@ -60,7 +62,7 @@ int main() {
             {"SWAP", MutationType::SWAP}, {"INV", MutationType::INVERSION}}) {
           std::string label = cx_label + "+" + mut_label;
           instance.reset_eval_counter();
-          EA ea(instance, pop, gen, EA_PX, EA_PM, EA_TOUR, cx, mut, EA_INIT);
+          EA ea(instance, pop, gen, px, EA_PM, EA_TOUR, cx, mut, EA_INIT);
           SummaryStats s = ea.runMultiple(N_RUNS);
           assert(instance.get_eval_counter() == N_RUNS * BUDGET);
           print_stats(label, s);

@@ -672,4 +672,51 @@ CX+INV    & 14200 & 21432 & 34289 & 326987 & 405567 & 7536259 \\
 
 \textbf{Przyjęta konfiguracja:} \texttt{crossover = OX}, \texttt{mutation = SWAP}.
 
+\subsection{Strojenie prawdopodobieństwa krzyżowania (Px)}
+
+Przetestowano pięć wartości \texttt{Px}: 0.50, 0.70, 0.90, 0.95, 0.98. Konfiguracja operatorów ustalona na OX+SWAP, pozostałe parametry bez zmian.
+
+\begin{table}[H]
+\centering
+\caption{Wyniki strojenia \texttt{Px} -- avg z 5 uruchomień}
+\begin{tabular}{lrrrrrr}
+\toprule
+Px & tai20\_5 & tai20\_10 & tai20\_20 & tai100\_10 & tai100\_20 & tai500\_20 \\
+\midrule
+0.50 & 14067 & 20977 & 33858 & 318557 & 391250 & 7318585 \\
+0.70 & 14049 & 20978 & \textbf{33769} & 316222 & 390330 & 7273954 \\
+0.90 & \textbf{14045} & \textbf{20947} & 33773 & \textbf{311625} & 387485 & 7205858 \\
+0.95 & 14058 & 20964 & 33803 & 313028 & \textbf{384112} & 7206759 \\
+0.98 & 14049 & 20963 & 33831 & 311889 & 385569 & \textbf{7185858} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Wnioski}
+
+Wyniki ujawniają wyraźny trend: \textbf{im trudniejsza instancja, tym wyższe Px jest korzystniejsze.}
+
+Na małych instancjach (tai20\_*) różnice między wartościami Px są marginalne i mieszczą się w granicach szumu statystycznego przy $N=5$. Na dużych instancjach (tai100\_*, tai500\_20) wzrost Px od 0.50 do 0.90--0.98 daje wyraźną i systematyczną poprawę -- dla tai500\_20 różnica między Px=0.50 a Px=0.98 wynosi ponad 1.8\%.
+
+\textbf{Dlaczego wyższe Px pomaga na trudnych instancjach?} Krzyżowanie jest operatorem budowania rozwiązań z fragmentów rodziców (,,building blocks hypothesis''). W dużej przestrzeni rozwiązań dobre częściowe struktury są rzadkie i trudne do odkrycia przez samą mutację -- krzyżowanie pozwala je łączyć i wzmacniać. Przy niskim Px większość potomków powstaje przez samo kopiowanie rodzica z mutacją, co de facto degeneruje EA do lokalnego przeszukiwania. Przy wysokim Px algorytm aktywnie rekombinuje najlepsze fragmenty populacji, co jest kluczowe gdy przestrzeń jest duża.
+
+Dla tai20\_20 optymalne jest Px=0.70, co może wskazywać na to, że dla tej instancji przestrzeń jest wystarczająco mała, by mutacja była wystarczającym motorem eksploracji, a zbyt agresywne krzyżowanie zaburza dobre rozwiązania.
+
+\textbf{Przyjęte wartości per-instancja:}
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Instancja & \texttt{pop\_size} & \texttt{Px} \\
+\midrule
+tai20\_5   & 5000 & 0.90 \\
+tai20\_10  & 5000 & 0.90 \\
+tai20\_20  & 5000 & 0.70 \\
+tai100\_10 & 500  & 0.90 \\
+tai100\_20 & 500  & 0.95 \\
+tai500\_20 & 500  & 0.98 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \end{document}
