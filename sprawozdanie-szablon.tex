@@ -265,27 +265,78 @@ Przy dużej przestrzeni i wysokim \texttt{Px} krzyżowanie dominuje reprodukcję
 
 Przetestowano macierz kombinacji dwóch parametrów:
 \begin{itemize}
-    \item \textbf{Współczynnik chłodzenia} $\alpha$: 0.990, 0.995, 0.999
-    \item \textbf{Mnożnik temperatury początkowej}: 0.5$\times$, 1$\times$, 5$\times$, 10$\times$ auto-estymaty
+    \item \textbf{Współczynnik chłodzenia} $\alpha \in \{0.990, 0.995, 0.999\}$
+    \item \textbf{Mnożnik temperatury początkowej} $\in \{0.5\times, 1\times, 5\times, 10\times\}$ auto-estymaty ($T_0 = -\overline{\Delta^+}/\ln(0.8)$)
 \end{itemize}
 
-Łącznie 12 kombinacji per instancja. Wyniki i wnioski -- w trakcie analizy.
+Łącznie 12 kombinacji per instancja, $N=5$ powtórzeń, $B=100\,000$.
+
+\begin{table}[H]
+\centering
+\caption{Strojenie SA -- avg z 5 uruchomień (wybrane wyniki)}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrrrrrr}
+\toprule
+$\alpha$ & t0 mult & tai20\_5 & tai20\_10 & tai20\_20 & tai100\_10 & tai100\_20 & tai500\_20 \\
+\midrule
+0.990 & 0.5$\times$ & 14423 & 21812 & 34490 & 312317 & 387086 & \textbf{6997211} \\
+0.990 & 1$\times$   & 14251 & 21741 & 34415 & 313499 & 385459 & 7027637 \\
+0.990 & 5$\times$   & 14316 & 22033 & 34506 & 312030 & 385404 & 7011055 \\
+0.990 & 10$\times$  & 14262 & 21790 & 34714 & 312374 & 386978 & 7017959 \\
+\midrule
+0.995 & 0.5$\times$ & 14277 & 21609 & 34383 & 313206 & 385331 & 7027496 \\
+0.995 & 1$\times$   & 14334 & 21588 & 34611 & 313006 & 385238 & 7024425 \\
+0.995 & 5$\times$   & 14290 & 21707 & 34554 & 313482 & 385612 & 7035818 \\
+0.995 & 10$\times$  & 14278 & 21700 & 34447 & 313060 & 387038 & 7005802 \\
+\midrule
+0.999 & 0.5$\times$ & 14279 & 21585 & 34249 & 313113 & 383319 & 7002763 \\
+0.999 & 1$\times$   & 14197 & 21588 & \textbf{34213} & \textbf{310930} & 385280 & 7019722 \\
+0.999 & 5$\times$   & 14205 & 21452 & 34452 & 311430 & \textbf{382694} & 7013917 \\
+0.999 & 10$\times$  & \textbf{14129} & \textbf{21291} & 34290 & 311087 & 385608 & 7008148 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsubsection{Wnioski}
+
+\textbf{Współczynnik chłodzenia:} $\alpha = 0.999$ wygrywa na 5 z 6 instancji. Wolne chłodzenie pozwala algorytmowi spędzić więcej czasu w fazie eksploracji przy umiarkowanej temperaturze -- kluczowe gdy przestrzeń rozwiązań jest złożona. Wyjątek stanowi tai500\_20, gdzie $\alpha = 0.990$ jest najlepszy, jednak różnice między wszystkimi konfiguracjami na tej instancji wynoszą poniżej 0.2\% i mieszczą się w szumie statystycznym przy $N=5$.
+
+\textbf{Mnożnik $T_0$:} brak jednoznacznego trendu -- optymalna wartość zależy od instancji. Na małych instancjach (tai20\_5, tai20\_10) wyższe wartości ($10\times$) dają lepsze wyniki: przy wolnym chłodzeniu wysoka $T_0$ zapewnia długą fazę eksploracji, a mała przestrzeń pozwala ją w pełni wykorzystać. Na dużych instancjach (tai100\_10, tai100\_20) wartości $1\times$--$5\times$ są optymalne, zaś na tai500\_20 niska wartość ($0.5\times$) z szybszym chłodzeniem działa najlepiej -- zbyt wysoka $T_0$ oznacza trwonienie budżetu na niemal losowe akceptacje zanim algorytm wejdzie w fazę eksploatacji.
+
+\textbf{Przyjęte wartości per-instancja:}
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Instancja & $\alpha$ & $T_0$ mult \\
+\midrule
+tai20\_5   & 0.999 & 10$\times$ \\
+tai20\_10  & 0.999 & 10$\times$ \\
+tai20\_20  & 0.999 & 1$\times$  \\
+tai100\_10 & 0.999 & 1$\times$  \\
+tai100\_20 & 0.999 & 5$\times$  \\
+tai500\_20 & 0.990 & 0.5$\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Podsumowanie strojeń EA}
 
 \begin{table}[H]
 \centering
-\caption{Zestawienie wybranych parametrów per instancja}
-\begin{tabular}{lccccc}
+\caption{Zestawienie finalnych parametrów per instancja}
+\begin{tabular}{lcccccccc}
 \toprule
-Instancja & \texttt{pop\_size} & \texttt{gen} & \texttt{Px} & \texttt{Pm} & Operatory \\
+ & \multicolumn{5}{c}{EA} & \multicolumn{2}{c}{SA} \\
+\cmidrule(lr){2-6} \cmidrule(lr){7-8}
+Instancja & \texttt{pop} & \texttt{gen} & \texttt{Px} & \texttt{Pm} & Operatory & $\alpha$ & $T_0$ mult \\
 \midrule
-tai20\_5   & 5000 & 19  & 0.90 & 0.01 & OX+SWAP \\
-tai20\_10  & 5000 & 19  & 0.90 & 0.05 & OX+SWAP \\
-tai20\_20  & 5000 & 19  & 0.70 & 0.05 & OX+SWAP \\
-tai100\_10 & 500  & 199 & 0.90 & 0.40 & OX+SWAP \\
-tai100\_20 & 500  & 199 & 0.95 & 0.40 & OX+SWAP \\
-tai500\_20 & 500  & 199 & 0.98 & 0.40 & OX+SWAP \\
+tai20\_5   & 5000 & 19  & 0.90 & 0.01 & OX+SWAP & 0.999 & 10$\times$ \\
+tai20\_10  & 5000 & 19  & 0.90 & 0.05 & OX+SWAP & 0.999 & 10$\times$ \\
+tai20\_20  & 5000 & 19  & 0.70 & 0.05 & OX+SWAP & 0.999 & 1$\times$  \\
+tai100\_10 & 500  & 199 & 0.90 & 0.40 & OX+SWAP & 0.999 & 1$\times$  \\
+tai100\_20 & 500  & 199 & 0.95 & 0.40 & OX+SWAP & 0.999 & 5$\times$  \\
+tai500\_20 & 500  & 199 & 0.98 & 0.40 & OX+SWAP & 0.990 & 0.5$\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
