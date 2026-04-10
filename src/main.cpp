@@ -54,20 +54,15 @@ int main() {
       float px  = cfg.px;
       int   gen = (BUDGET - pop) / pop;
 
-      // --- Tune EA operator combinations ---
-      std::cout << "-- EA operators --\n";
-      for (auto [cx_label, cx] : std::vector<std::pair<std::string, CrossoverType>>{
-          {"OX", CrossoverType::OX}, {"PMX", CrossoverType::PMX}, {"CX", CrossoverType::CX}}) {
-        for (auto [mut_label, mut] : std::vector<std::pair<std::string, MutationType>>{
-            {"SWAP", MutationType::SWAP}, {"INV", MutationType::INVERSION}}) {
-          std::string label = cx_label + "+" + mut_label;
-          instance.reset_eval_counter();
-          EA ea(instance, pop, gen, px, EA_PM, EA_TOUR, cx, mut, EA_INIT);
-          SummaryStats s = ea.runMultiple(N_RUNS);
-          assert(instance.get_eval_counter() == N_RUNS * BUDGET);
-          print_stats(label, s);
-          Logger(ea.getBestRunHistory(), base + "_EA_" + label + ".csv").dumpToFile();
-        }
+      // --- Tune EA Pm ---
+      std::cout << "-- EA Pm --\n";
+      for (float pm : {0.01f, 0.05f, 0.1f, 0.2f, 0.4f}) {
+        instance.reset_eval_counter();
+        EA ea(instance, pop, gen, px, pm, EA_TOUR, EA_CROSS, EA_MUT, EA_INIT);
+        SummaryStats s = ea.runMultiple(N_RUNS);
+        assert(instance.get_eval_counter() == N_RUNS * BUDGET);
+        print_stats("Pm=" + std::to_string(pm), s);
+        Logger(ea.getBestRunHistory(), base + "_EA_Pm" + std::to_string(pm) + ".csv").dumpToFile();
       }
 
       // --- SA for reference ---

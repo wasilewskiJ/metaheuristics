@@ -719,4 +719,53 @@ tai500\_20 & 500  & 0.98 \\
 \end{tabular}
 \end{table}
 
+\subsection{Strojenie prawdopodobieństwa mutacji (Pm)}
+
+Przetestowano pięć wartości \texttt{Pm}: 0.01, 0.05, 0.10, 0.20, 0.40. Konfiguracja: OX+SWAP, per-instancja \texttt{pop\_size} i \texttt{Px} z poprzednich etapów.
+
+\begin{table}[H]
+\centering
+\caption{Wyniki strojenia \texttt{Pm} -- avg z 5 uruchomień}
+\begin{tabular}{lrrrrrr}
+\toprule
+Pm & tai20\_5 & tai20\_10 & tai20\_20 & tai100\_10 & tai100\_20 & tai500\_20 \\
+\midrule
+0.01 & \textbf{14046} & 20968 & 33812 & 317763 & 388332 & 7218867 \\
+0.05 & 14047 & \textbf{20947} & \textbf{33782} & 314825 & 387514 & 7207249 \\
+0.10 & 14062 & 20962 & 33783 & 313286 & 385259 & 7189132 \\
+0.20 & 14074 & 20999 & 33818 & 311163 & 383801 & 7180216 \\
+0.40 & 14088 & 21049 & 33862 & \textbf{310342} & \textbf{383251} & \textbf{7168178} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Wnioski}
+
+Wyniki ujawniają odwrotny wzorzec niż przy strojeniu \texttt{Px}: \textbf{im trudniejsza instancja, tym wyższe Pm jest korzystniejsze.}
+
+\textbf{Małe instancje (tai20\_*):} niskie Pm (0.01--0.05) daje najlepsze wyniki. Przestrzeń rozwiązań jest mała i stosunkowo dobrze eksplorowana przez krzyżowanie -- agresywna mutacja wprowadza zakłócenia niszczące dobre struktury wypracowane przez OX.
+
+\textbf{Duże instancje (tai100\_*, tai500\_20):} trend jest monotonicznie rosnący -- Pm=0.40 wygrywa we wszystkich trzech instancjach bez wyjątku, z wyraźną przewagą (np. tai500\_20: 7218867 przy Pm=0.01 vs 7168178 przy Pm=0.40, poprawa o 0.7\%).
+
+\textbf{Dlaczego wysokie Pm pomaga na trudnych instancjach?} Przy dużej przestrzeni rozwiązań i wysokim Px (0.95--0.98) krzyżowanie dominuje reprodukcję -- potomkowie są blisko rodziców, populacja szybko traci różnorodność i zbiega do lokalnego minimum. Mutacja przy wysokim Pm pełni rolę mechanizmu dywersyfikacji: regularnie wstrzykuje losowe perturbacje, które pozwalają populacji eksplorować odległe rejony przestrzeni. Jest to szczególnie ważne gdy przestrzeń jest wielowymiarowa i pełna lokalnych minimów.
+
+Zestawienie z wynikami strojenia Px ujawnia interesującą zależność: \textbf{Px i Pm działają komplementarnie}. Na trudnych instancjach wysokie Px (eksploatacja dobrych budulców przez krzyżowanie) musi być równoważone wysokim Pm (eksploracja przez mutację). Na łatwych instancjach oba parametry powinny być umiarkowane.
+
+\textbf{Przyjęte wartości per-instancja (aktualizacja):}
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Instancja & \texttt{pop\_size} & \texttt{Px} & \texttt{Pm} \\
+\midrule
+tai20\_5   & 5000 & 0.90 & 0.01 \\
+tai20\_10  & 5000 & 0.90 & 0.05 \\
+tai20\_20  & 5000 & 0.70 & 0.05 \\
+tai100\_10 & 500  & 0.90 & 0.40 \\
+tai100\_20 & 500  & 0.95 & 0.40 \\
+tai500\_20 & 500  & 0.98 & 0.40 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \end{document}
